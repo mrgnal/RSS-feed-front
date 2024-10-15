@@ -8,26 +8,28 @@ class CustomUserManager(UserManager):
         if not email:
             raise ValueError("you have not provided a valid email")
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(email=email,username=username, **extra_fields)
+        print("User data before save:", user.__dict__)
         user.set_password(password)
         user.save(using=self._db)
-
+        print("User saved successfully")
         return user
 
     def create_user(self, username, email=None, password=None, **extra_fields):
-        extra_fields.setdefault('is_admin', False)
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
+        extra_fields.setdefault('is_email_verified', False)
+        return self._create_user(username, email, password, **extra_fields)
 
     def create_superuser(self, username, email=None, password=None, **extra_fields):
-        extra_fields.setdefault('is_admin', True)
         extra_fields.setdefault('is_superuser', True)
-        return self._create_user(email, password, **extra_fields)
+        extra_fields.setdefault('is_email_verified', True)
+        return self._create_user(username, email, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(unique=True, max_length=50)
+    is_email_verified = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
