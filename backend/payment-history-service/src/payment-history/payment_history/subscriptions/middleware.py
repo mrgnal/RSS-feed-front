@@ -1,0 +1,39 @@
+import requests
+from dotenv import load_dotenv
+from django.http import JsonResponse
+from rest_framework import status
+import os
+
+load_dotenv()
+
+AUTH_SERVICE_URL = os.getenv('AUTH_SERVICE_URL')
+
+
+def verify_token(token):
+    response = requests.post(
+        f"{AUTH_SERVICE_URL}/api/verify_token/",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"token": token}
+    )
+    print('info: ', response.json())
+    return response.json() if response.status_code == 200 else None
+
+
+class TokenVerificationMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        token = request.META.get('HTTP_AUTHORIZATION')
+        if token:
+            user_info = verify_token(token.split(' ')[1])
+            print(user_info)
+            if not user_info:
+                return JsonResponse({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+            else:
+                request.user_info = user_info
+            print(request.user_info)
+            response = self.get_response(request)
+            return response
+        else:
+            return JsonResponse({'error': 'No token'}, status=status.HTTP_401_UNAUTHORIZED)
