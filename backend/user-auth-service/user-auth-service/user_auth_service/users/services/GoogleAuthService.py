@@ -27,7 +27,7 @@ class GoogleAuthService(AuthServiceBase):
                 'email': email,
                 'username': username,
                 'password': idinfo['id']+'RSs!',
-                'is_email_verified': idinfo['verified_email'],
+                'is_email_verified': True,
                 'role': 'client',
             }
 
@@ -38,6 +38,7 @@ class GoogleAuthService(AuthServiceBase):
             print(base_url)
             register_url = f"{base_url}{reverse('register')}"
             login_url = f"{base_url}{reverse('login')}"
+            user_data['user_data'] = True
             register_response = requests.post(register_url, data=user_data)
             if register_response.status_code in [status.HTTP_201_CREATED, status.HTTP_400_BAD_REQUEST]:
                 login_data = {

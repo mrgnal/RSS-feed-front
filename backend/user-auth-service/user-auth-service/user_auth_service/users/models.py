@@ -1,6 +1,9 @@
 import django.contrib.auth
 from django.db import models
 from django.contrib.auth.models import UserManager, AbstractBaseUser, PermissionsMixin
+from .services.PasswordResetService import PasswordResetService
+from django_rest_passwordreset.signals import reset_password_token_created
+from django.dispatch import receiver
 
 
 class CustomUserManager(UserManager):
@@ -38,3 +41,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = 'Users'
+
+
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+    PasswordResetService.send_reset_email(reset_password_token, instance.request)

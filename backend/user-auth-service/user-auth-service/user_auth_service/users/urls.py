@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import LoginView, RegisterView,GoogleAuthInitView,GoogleAuthCallbackView
+from .views import LoginView, RegisterView,GoogleAuthInitView,GoogleAuthCallbackView, change_password
 from . import views
 
 
@@ -8,5 +8,7 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('google/login/', GoogleAuthInitView.as_view(), name='google_auth_init'),
     path('google/login/callback/', GoogleAuthCallbackView.as_view(), name='google_auth_callback'),
-    path('activate/<uidb64>/<token>', views.activate, name='activate')
+    path('activate/<uidb64>/<token>', views.activate, name='activate'),
+    path('change_password/', change_password, name='change_password'),
+    path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
 ]

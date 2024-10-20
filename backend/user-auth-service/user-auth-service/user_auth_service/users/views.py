@@ -1,8 +1,6 @@
 import os
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
 from .services.AccountActivationTokenGenerator import account_activation_token
 from .services.AuthService import AuthService
 from .services.GoogleAuthService import GoogleAuthService
@@ -10,10 +8,14 @@ from rest_framework import status
 from django.conf import settings
 import requests
 from django.shortcuts import redirect
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib import messages
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from .serializers import ChangePasswordSerializer
+from .services.PasswordChangeService import PasswordChangeService
 
 
 class AuthViewBase(APIView):
@@ -94,3 +96,14 @@ def activate(request, uidb64, token):
         messages.error(request, "Activation link is invalid!")
 
     return redirect(HOME_PAGE_URL)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    serializer = ChangePasswordSerializer(data=request.data)
+    if serializer.is_valid():
+        old_password = serializer.data.get('old_password')
+        new_password = serializer.data.get('new_password')
+        return PasswordChangeService.change_user_password(request.user, old_password, new_password, request)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -28,6 +28,7 @@ EMAIL_FROM = os.getenv('EMAIL_FROM')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_HOST_PORT = os.getenv('EMAIL_HOST_PORT')
+EMAIL_PORT = os.getenv('EMAIL_HOST_PORT')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 
 PASSWORD_RESET_TIMEOUT = 14400
@@ -63,9 +64,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'dj_rest_auth.registration',
+    'django_rest_passwordreset',
 ]
-
-SITE_ID = 2
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
