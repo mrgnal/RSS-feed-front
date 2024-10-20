@@ -2,6 +2,8 @@ import os
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from .models import User
 from .services.AccountActivationTokenGenerator import account_activation_token
 from .services.AuthService import AuthService
 from .services.GoogleAuthService import GoogleAuthService
@@ -20,6 +22,8 @@ from .services.PasswordChangeService import PasswordChangeService
 from rest_framework import generics, permissions
 from .services.UserProfileService import UserProfileService
 from .services.SendEmailService import SendEmailService
+from rest_framework_simplejwt.views import TokenVerifyView
+from rest_framework_simplejwt.tokens import UntypedToken
 
 
 class AuthViewBase(APIView):
@@ -150,3 +154,27 @@ class SendEmailView(APIView):
         result = mailing_service.send_message(email_subject, message, to_email)
 
         return Response(result, status=result.get('status', status.HTTP_500_INTERNAL_SERVER_ERROR))
+
+
+class CustomTokenVerifyView(TokenVerifyView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == 200:
+            token = request.data.get('token', None)
+            if token:
+                validated_token = UntypedToken(token)
+                user_id = validated_token['user_id']
+                try:
+                    user = User.objects.get(id=user_id)
+                    user_info = {
+                        'id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                    }
+                    response.data['user_info'] = user_info
+                except User.DoesNotExist:
+                    response.data['user_info'] = None
+
+        return response

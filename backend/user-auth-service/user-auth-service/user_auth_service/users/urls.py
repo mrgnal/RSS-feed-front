@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import LoginView, RegisterView, GoogleAuthInitView, GoogleAuthCallbackView, change_password, \
-    UserProfileUpdateView, UserProfileDeleteView, SendEmailView
+    UserProfileUpdateView, UserProfileDeleteView, SendEmailView, CustomTokenVerifyView
 from . import views
 
 
@@ -15,4 +15,6 @@ urlpatterns = [
     path('change_account_data/', UserProfileUpdateView.as_view(), name='change_data'),
     path('delete_profile/', UserProfileDeleteView.as_view(), name='delete_profile'),
     path('send_email/', SendEmailView.as_view(), name='send_email'),
+    path('verify_token/', CustomTokenVerifyView.as_view(), name='token_verify')
+
 ]
