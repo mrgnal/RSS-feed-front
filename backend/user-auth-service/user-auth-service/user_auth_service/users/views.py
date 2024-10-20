@@ -18,8 +18,8 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import ChangePasswordSerializer, UserUpdateSerializer
 from .services.PasswordChangeService import PasswordChangeService
 from rest_framework import generics, permissions
-
 from .services.UserProfileService import UserProfileService
+from .services.SendEmailService import SendEmailService
 
 
 class AuthViewBase(APIView):
@@ -132,3 +132,21 @@ class UserProfileDeleteView(generics.DestroyAPIView):
     def destroy(self, request: Request, *args, **kwargs):
         service = UserProfileService(request.user)
         return Response(service.delete_profile())
+
+
+class SendEmailView(APIView):
+    def post(self, request):
+        email_subject = request.data.get('email_subject')
+        message = request.data.get('message')
+        to_email = request.data.get('to_email')
+
+        if not email_subject or not message or not to_email:
+            return Response(
+                {'error': 'email_subject, message, and to_email are required.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        mailing_service = SendEmailService()
+        result = mailing_service.send_message(email_subject, message, to_email)
+
+        return Response(result, status=result.get('status', status.HTTP_500_INTERNAL_SERVER_ERROR))
