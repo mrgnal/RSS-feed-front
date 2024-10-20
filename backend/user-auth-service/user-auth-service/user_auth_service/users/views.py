@@ -1,4 +1,5 @@
 import os
+from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .services.AccountActivationTokenGenerator import account_activation_token
@@ -14,8 +15,11 @@ from django.utils.encoding import force_bytes, force_str
 from django.contrib import messages
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .serializers import ChangePasswordSerializer
+from .serializers import ChangePasswordSerializer, UserUpdateSerializer
 from .services.PasswordChangeService import PasswordChangeService
+from rest_framework import generics, permissions
+
+from .services.UserProfileService import UserProfileService
 
 
 class AuthViewBase(APIView):
@@ -107,3 +111,24 @@ def change_password(request):
         new_password = serializer.data.get('new_password')
         return PasswordChangeService.change_user_password(request.user, old_password, new_password, request)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes([IsAuthenticated])
+class UserProfileUpdateView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserUpdateSerializer
+
+    def update(self, request: Request, *args, **kwargs):
+        service = UserProfileService(request.user)
+        data = request.data
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1] if 'HTTP_AUTHORIZATION' in request.META else None
+        return Response(service.update_user_data(data, token, request))
+
+
+@permission_classes([IsAuthenticated])
+class UserProfileDeleteView(generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def destroy(self, request: Request, *args, **kwargs):
+        service = UserProfileService(request.user)
+        return Response(service.delete_profile())
