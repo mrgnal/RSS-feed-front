@@ -35,3 +35,4 @@ Dockerfile.dev
 *.sublime-project
 *.sublime-workspace
 .DS_Store
+/test.py
