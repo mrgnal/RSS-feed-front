@@ -28,5 +28,14 @@ services:
     ports:
       - '2181:2181'
 
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+
+
+
 volumes:
   postgres_data:
