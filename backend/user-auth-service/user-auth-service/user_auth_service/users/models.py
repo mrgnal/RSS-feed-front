@@ -4,6 +4,7 @@ from django.contrib.auth.models import UserManager, AbstractBaseUser, Permission
 from .services.PasswordResetService import PasswordResetService
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.dispatch import receiver
+import uuid
 
 
 class CustomUserManager(UserManager):
@@ -30,6 +31,7 @@ class CustomUserManager(UserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     username = models.CharField(unique=True, max_length=50)
     is_email_verified = models.BooleanField(default=False)
