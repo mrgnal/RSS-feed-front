@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'dj_rest_auth.registration',
     'django_rest_passwordreset',
+    'drf_yasg',
 ]
 
 SOCIALACCOUNT_PROVIDERS = {

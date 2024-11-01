@@ -6,7 +6,7 @@ from rest_framework import serializers
 class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password', 'is_email_verified']
 
     def create(self, validated_data):
         user = super().create(validated_data)
