@@ -42,7 +42,7 @@ class RegisterView(AuthViewBase):
         password = serializers.CharField(required=True, max_length=128, write_only=True)
         username = serializers.CharField(max_length=50, required=True)
         role = serializers.CharField(required=True)
-        is_email_verified = serializers.CharField(required=True)
+        is_email_verified = serializers.BooleanField(required=True)
 
     serializer_class = RegisterSerializer
 
