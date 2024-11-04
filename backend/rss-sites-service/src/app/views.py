@@ -1,10 +1,32 @@
-from django.shortcuts import render
-from rest_framework import viewsets
-from .models import RssModel
-from .serializers import *
-# Create your views here.
+import json
+from confluent_kafka import Producer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from dotenv import load_dotenv
+import os
 
-# class RssViewSet(viewsets.ModelViewSet):
-#     queryset = RssModel.objects.all()
-#     serializer_class = RssSerializer
+load_dotenv()
+KAFKA_HOST = os.getenv('KAFKA_HOST')
+KAFKA_PORT = os.getenv('KAFKA_PORT')
 
+class EventAPIView(APIView):
+    def post(self, request):
+        url = request.data.get('url')  # Отримуємо URL з тіла запиту
+        if not url:
+            return Response({'error': 'URL is required'}, status=400)
+
+        data = {
+            'url': url
+        }
+        producer_conf = {
+            'bootstrap.servers': f'{KAFKA_HOST}:{KAFKA_PORT}'
+        }
+        producer = Producer(producer_conf)
+
+        try:
+            producer.produce('check_rss_chanel', value=json.dumps(data).encode('utf-8'))
+            producer.flush()
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+        print(data.get('url'))
+        return Response({'status': 'message sent'})

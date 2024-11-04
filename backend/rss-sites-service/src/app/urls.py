@@ -9,3 +9,7 @@ from .views import *
 #     path('', include(router.urls)),
 # ]
 #
+
+urlpatterns =[
+    path('api/events/', EventAPIView.as_view(), name='event-api')
+]
