@@ -207,7 +207,7 @@ class UserProfileDeleteView(generics.DestroyAPIView):
 class SendEmailView(APIView):
     class SendEmailSerializer(serializers.Serializer):
         to_email = serializers.EmailField(required=True)
-        subject = serializers.CharField(max_length=50, required=True)
+        email_subject = serializers.CharField(max_length=50, required=True)
         message = serializers.CharField(required=True)
 
     @swagger_auto_schema(
