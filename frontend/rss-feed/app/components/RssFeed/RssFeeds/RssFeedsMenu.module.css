@@ -1,0 +1,176 @@
+.menu{
+    background-color: darkgreen;
+    color: white;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+.menuVisible {
+    width: 280px;
+    padding: 20px;
+}
+  
+.menuHidden {
+    width: 60px;
+    padding: 10px;
+}
+
+.menuButtons{
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.menuHead{
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.menuHeadVisible{
+    flex-direction: row;
+}
+
+.menuHeadHidden{
+    flex-direction: column;
+    align-items: center;
+}
+
+.logoButton{
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 5px;
+    gap: 8px;
+    white-space: nowrap;
+    width: fit-content;
+    padding: 5px;
+}
+
+.menuSearch{
+    display: flex;
+    flex-direction: row;
+    background-color: #007300;
+    border: 1px solid #008600;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.menuSearchVisible{
+    gap: 8px;
+}
+
+.menuSearchHidden{
+    gap: 0px;
+}
+
+.menuSearchInput{
+    background-color: #007300;
+    width: 100%;
+}
+
+.menuSearchInput:focus{
+    outline: none;
+}
+
+.button{
+    display: inline-flex;
+    flex-direction: row;
+    width: 100%;
+    border-radius: 5px;
+    gap: 8px;
+    padding: 5px;
+}
+
+.buttonShow{
+    justify-content: start;
+}
+
+.buttonHidden{
+    justify-content: center;
+    gap: 0px !important;
+}
+
+.button:hover{
+    background-color: #007300;
+}
+
+.newFeedButton{
+    background-color: #007300;
+    justify-content: center;
+}
+
+.plan{
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.planInfo{
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.feedsInfo{
+    display: inline-flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.planName{
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.daysLost{
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.manage{
+    text-decoration: underline;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.feedsInfoText{
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 12px;
+}
+
+.emptyBar{
+    background-color: aliceblue;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+}
+
+.bar{
+    background-color: rgb(204, 207, 0);
+    height: 4px;
+    border-radius: 2px;
+}
+
+.upgradeButton{
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    color: white;
+    background-color: var(--second-color);
+    border-radius: 5px;
+    padding: 12px;
+    gap: 8px;
+    white-space: nowrap;
+    width: 100%;
+}

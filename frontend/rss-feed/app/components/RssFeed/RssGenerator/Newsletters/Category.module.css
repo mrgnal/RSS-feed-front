@@ -1,0 +1,10 @@
+.category{
+    display: inline;
+    width: fit-content;
+    height: fit-content;
+    background-color: gainsboro;
+    font-size: 0.8125rem;
+    color: rgb(102, 102, 102);
+    border-radius: 0.8125rem;
+    padding: 0 5px;
+}

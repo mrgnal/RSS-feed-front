@@ -1,0 +1,17 @@
+.rssTypeButton{
+    width: 200px;
+    height: 40px;
+    padding: 10px;
+    display: inline-flex;
+    border: 1px solid var(--main-color);
+    font-size: 24px;
+    align-items: center;
+    justify-content: center;
+    align-content: space-between;
+    gap: 10px;
+}
+
+.activeButton{
+    background-color: var(--main-color);
+    color: white;
+}

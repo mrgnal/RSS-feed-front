@@ -35,3 +35,6 @@ Dockerfile.dev
 *.sublime-project
 *.sublime-workspace
 .DS_Store
+
+#Next
+node_modules/
