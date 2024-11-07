@@ -15,7 +15,8 @@ def fetch_full_page(url):
 def save_page_in_file(page, file_path):
     try:
         with open(f'{file_path}', 'w') as f:
-            f.write(file_path, page)
+            f.write(page)
         print(f"File: {file_path} saved")
     except Exception as e:
         print(f"Error saving: {e}")
+
