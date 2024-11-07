@@ -4,7 +4,7 @@ from parser import fetch_full_page
 
 app = FastAPI()
 
-@app.post('/api/fetch_page/')
+@app.get('/api/fetch_page/')
 def get_source_page(url: str):
     html_content = fetch_full_page(url)
     return JSONResponse(content={'html_content': html_content})
