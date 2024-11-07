@@ -1,0 +1,143 @@
+.general{
+    width: 100%;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 60px;
+    background-color: var(--gray-color);
+}
+
+.generalText{
+    font-size: 32px;
+    font-weight: 600;
+    width: fit-content;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.createRss{
+    color: var(--main-color);
+}
+
+.input{
+    border: 1px solid #e7e7e7;
+    border-radius: 5px;
+    max-width: 576px;
+    width: 100%;
+    padding-left: 10px;
+    font-size: 20px;
+    font-weight: 300;
+}
+
+.input::placeholder{
+    font-size: 20px;
+    font-weight: 300;
+    width: 100%;
+}
+
+.input:focus{
+    outline: none;
+}
+
+.URL{
+    width: 100%;
+    max-width: 680px;
+    display: inline-flex;
+    height: fit-content;
+    gap: 10px;
+    height: 48px;
+}
+
+.generateButton{
+    color: white;
+    background-color: var(--main-color);
+}
+
+.contentContainer{
+    display: inline-flex;
+    align-items: center;
+    margin: 50px 360px;
+    width: calc(100% - 360px*2);
+}
+
+.secondContentContainer{
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 50px;
+}
+
+.builderContent{
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.builderContentTitle{
+    padding: 32px 0;
+    color: rgb(66, 66, 66);
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.guideContainer{
+    display: grid;
+    max-width: 1050px;
+    row-gap: 20px;
+    grid-template-columns: 70% 30%;
+    grid-template-rows: auto;
+    grid-template-areas:
+    "a c" 
+    "b c";
+    border: 1px solid rgb(231, 231, 231);
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 48px;
+}
+
+.guideGridItem{
+    color: rgb(66, 66, 66);
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    row-gap: 4px;
+    box-sizing: inherit;
+    font-size: 14px;
+    line-height: 29px;
+    letter-spacing: 0.1px;
+    font-weight: 400;
+}
+
+.firstPage{
+    grid-area: a;
+}
+
+.secondPage{
+    grid-area: b;
+    padding-left: 53px;
+    position: relative;
+}
+
+.arrowContainer::before{
+    box-sizing: inherit;
+}
+
+.arrowContainer::after{
+    box-sizing: inherit;
+}
+
+.arrow{
+    position: absolute;
+    right: -145px;
+    bottom: 93px;
+    scale: 0.65;
+}
+
+.thirdPage{
+    grid-area: c;
+}

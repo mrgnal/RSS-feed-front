@@ -1,0 +1,31 @@
+.subtitleContainer{
+    display: flex;
+    column-gap: 16px;
+    -moz-box-align: center;
+    align-items: center;
+    -moz-box-pack: start;
+    justify-content: flex-start;
+    padding-left: 16px;
+}
+
+.pageNumber{
+    display: flex;
+    border: 1px solid rgb(66, 66, 66);
+    border-radius: 50%;
+    min-width: 28px;
+    height: 28px;
+    -moz-box-pack: center;
+    justify-content: center;
+    -moz-box-align: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.typographySubtitle{
+    margin: 0px;
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: 0.15px;
+    font-weight: 600;
+}

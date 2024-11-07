@@ -1,0 +1,26 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    align-items: center;
+    border-bottom: 1px solid rgb(231, 231, 231);
+}
+
+.title{
+    font-size: 24px;
+    font-weight: 600;
+    color: rgb(66, 66, 66);;
+}
+
+.circle{
+    width: 36px;
+    height: 36px;
+    background-color: black;
+    border-radius: 18px;
+}
+
+.user{
+    display: inline-flex;
+    gap: 18px;
+    align-items: center;
+}

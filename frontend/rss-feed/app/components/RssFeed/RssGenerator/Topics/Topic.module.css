@@ -1,0 +1,19 @@
+.topic{
+    display: inline-flex;
+    flex-direction: column;
+    gap: 5px;
+    height: min-content;
+    width: 100%;
+    justify-content: center;
+}
+
+.topicTitle{
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--main-color);
+}
+
+.topicAction{
+    font-size: 16px;
+    font-weight: 600;
+}
