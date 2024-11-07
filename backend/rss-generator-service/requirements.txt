@@ -11,7 +11,6 @@ Django==5.1.1
 django-cors-headers==4.4.0
 djangorestframework==3.15.2
 djangorestframework-simplejwt==5.3.1
-feedparser==6.0.11
 kombu==5.4.2
 prompt_toolkit==3.0.48
 psycopg2-binary==2.9.9
@@ -24,3 +23,4 @@ sqlparse==0.5.1
 tzdata==2024.2
 vine==5.1.0
 wcwidth==0.2.13
+feedparser==6.0.11

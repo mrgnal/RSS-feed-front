@@ -1,21 +1,22 @@
-
 services:
+
   db:
     image: postgres:16
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     ports:
       - '5432:5432'
-#  nginx:
+
+  #  nginx:
 #    image: nginx:latest
 #    ports:
 #      - "80:80"
 #    volumes:
 #      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+
   kafka:
     image: bitnami/kafka:latest
     environment:
@@ -26,7 +27,6 @@ services:
     depends_on:
       - zookeeper
 
-
   zookeeper:
     image: bitnami/zookeeper:latest
     environment:
@@ -34,35 +34,123 @@ services:
     ports:
       - '2181:2181'
 
+  user_auth:
+    build:
+      context: ./backend/user-auth-service
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${USER_NAME_DB}
+    volumes:
+      - ./backend/user-auth-service/src:/app
+    ports:
+      - '8001:80'
+    depends_on:
+      - db
+      #    - nginx
+
+  payment_history:
+    build:
+      context: ./backend/payment-history-service
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${PAYMENT_HISTORY_NAME_DB}
+    volumes:
+      - ./backend/payment-history-service/src:/app
+    ports:
+      - '8002:80'
+    depends_on:
+      - db
+      #    - nginx
+
+  payment:
+    build:
+      context: ./backend/payment-service
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${PAYMENT_NAME_DB}
+    volumes:
+      - ./backend/payment-service/src:/app
+    ports:
+      - '8003:80'
+    depends_on:
+      - db
+      #    - nginx
 
   rss_sites:
-   build:
-     context: ./backend/rss-sites-service
-   env_file:
-     .env
-   volumes:
-     - ./backend/rss-sites-service/src:/app
-   ports:
-    - '8001:80'
-   depends_on:
-    - db
-#    - nginx
-    - kafka
+    build:
+      context: ./backend/rss-sites-service
+    env_file:
+      .env
+    environment:
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${RSS_SITES_NAME_DB}
+    volumes:
+      - ./backend/rss-sites-service/src:/app
+    ports:
+      - '8004:80'
+    depends_on:
+      - db
+      #    - nginx
+      - kafka
+
+  rss_saves:
+    build:
+      context: ./backend/rss-saves-service
+    env_file:
+      .env
+    environment:
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${RSS_SAVES_NAME_DB}
+    volumes:
+      - ./backend/rss-saves-service/src:/app
+    ports:
+      - '8005:80'
+    depends_on:
+      - db
+      #    - nginx
+      - kafka
 
   rss_generator:
-   build:
-     context: ./backend/rss-generator-service
-   env_file:
-     .env
-   volumes:
-     - ./backend/rss-generator-service/src:/app
-   ports:
-    - '8002:80'
-   depends_on:
-    - db
-#    - nginx
-    - kafka
+    build:
+      context: ./backend/rss-generator-service
+    env_file:
+      .env
+    volumes:
+      - ./backend/rss-generator-service/src:/app
+    ports:
+      - '8006:80'
+    depends_on:
+      - db
+      #    - nginx
+      - kafka
 
+  rss_builder:
+    build:
+      context: ./backend/rss-builder-service
+    env_file:
+      .env
+    volumes:
+      - ./backend/rss-builder-service/src:/app
+    ports:
+      - '8007:80'
+    depends_on:
+      - db
+      #    - nginx
+      - kafka
+
+  admin:
+    build:
+      context: ./backend/admin-service
+    env_file:
+      .env
+    volumes:
+      - ./backend/admin-service/src:/app
+    ports:
+      - '8008:80'
+    depends_on:
+      - db
+      #    - nginx
 
 volumes:
   postgres_data:

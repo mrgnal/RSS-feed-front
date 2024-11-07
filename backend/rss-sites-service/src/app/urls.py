@@ -11,5 +11,5 @@ from .views import *
 #
 
 urlpatterns =[
-    path('api/events/', EventAPIView.as_view(), name='event-api')
+    # path('api/events/', EventAPIView.as_view(), name='event-api')
 ]
