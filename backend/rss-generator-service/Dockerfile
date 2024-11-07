@@ -9,4 +9,4 @@ COPY src/ .
 
 EXPOSE 80
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:80"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
