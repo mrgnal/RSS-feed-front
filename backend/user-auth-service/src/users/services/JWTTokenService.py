@@ -2,7 +2,7 @@ import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
 
-from user_auth_service.users.services.abstracts.token_base import TokenServiceBase
+from .abstracts.token_base import TokenServiceBase
 
 
 class JWTTokenService(TokenServiceBase):

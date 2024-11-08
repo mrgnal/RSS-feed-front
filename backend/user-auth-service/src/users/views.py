@@ -1,4 +1,6 @@
 import os
+
+import rest_framework_simplejwt
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -22,7 +24,7 @@ from rest_framework import generics, permissions
 from .services.UserProfileService import UserProfileService
 from .services.SendEmailService import SendEmailService
 from rest_framework_simplejwt.views import TokenVerifyView
-from rest_framework_simplejwt.tokens import UntypedToken
+from rest_framework_simplejwt.tokens import UntypedToken, RefreshToken
 from rest_framework.generics import GenericAPIView
 from rest_framework import serializers
 from drf_yasg.utils import swagger_auto_schema
@@ -42,6 +44,7 @@ class RegisterView(AuthViewBase):
         password = serializers.CharField(required=True, max_length=128, write_only=True)
         username = serializers.CharField(max_length=50, required=True)
         role = serializers.CharField(required=True)
+        is_email_verified = serializers.BooleanField(required=True)
 
     serializer_class = RegisterSerializer
 
@@ -71,6 +74,39 @@ class LoginView(AuthViewBase):
         if result['status_code'] == status.HTTP_200_OK:
             return Response(result, status=status.HTTP_200_OK)
         return Response(result, status=result['status_code'])
+
+
+class RefreshView(AuthViewBase):
+    class TokenSerializer(serializers.Serializer):
+        refresh_token = serializers.CharField(required=True)
+    serializer_class = TokenSerializer
+
+    @swagger_auto_schema(
+        request_body=TokenSerializer,
+        responses={
+            200: 'Successful login',
+            401: 'Unauthorized',
+            400: 'Bad request',
+        }
+    )
+    def post(self, request):
+        serializer = self.TokenSerializer(data=request.data)
+        if serializer.is_valid():
+            refresh_token = serializer.validated_data['refresh_token']
+            try:
+                refresh = RefreshToken(refresh_token)
+                new_access_token = str(refresh.access_token)
+
+                return Response(
+                    {
+                        "access_token": new_access_token,
+                        "refresh_token": str(refresh)
+                    },
+                    status=status.HTTP_200_OK
+                )
+            except Exception as e:
+                return Response({"detail": "Invalid token."}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GoogleAuthInitView(APIView):
@@ -206,7 +242,7 @@ class UserProfileDeleteView(generics.DestroyAPIView):
 class SendEmailView(APIView):
     class SendEmailSerializer(serializers.Serializer):
         to_email = serializers.EmailField(required=True)
-        subject = serializers.CharField(max_length=50, required=True)
+        email_subject = serializers.CharField(max_length=50, required=True)
         message = serializers.CharField(required=True)
 
     @swagger_auto_schema(

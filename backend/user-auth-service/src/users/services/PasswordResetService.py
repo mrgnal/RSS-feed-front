@@ -9,8 +9,7 @@ class PasswordResetService:
             'current_user': reset_password_token.user,
             'username': reset_password_token.user.username,
             'email': reset_password_token.user.email,
-            'reset_password_url': "{}?token={}".format(
-                request.build_absolute_uri(reverse('password_reset:reset-password-confirm')),
+            'reset_password_url': "http://localhost:3000/pages/Auth/newPassword?token={}".format(
                 reset_password_token.key
             )
         }

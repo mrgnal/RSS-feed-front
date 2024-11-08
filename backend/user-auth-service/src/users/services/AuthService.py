@@ -33,6 +33,7 @@ class AuthService(AuthServiceBase):
                 "refresh_token": refresh_token,
                 "user_id": user.id,
                 "username": user.username,
+                "email": user.email,
                 "groups": [group.name for group in user.groups.all()]
             }
         return {
