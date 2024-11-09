@@ -34,6 +34,7 @@ class PaymentExecuteView(APIView):
                 openapi.IN_QUERY,
                 description="The ID of the payer",
                 type=openapi.TYPE_STRING,
+                format="uuid",
                 required=True
             )
         ],
@@ -132,7 +133,11 @@ class PaymentView(APIView):
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "user_id": openapi.Schema(type=openapi.TYPE_STRING, format="uuid"),
+                "user_id": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    pattern="^[a-f0-9]{32}$",
+                    example="b7f5e897b1774dc88a1f420ae74ff8d6"
+                ),
                 "amount": openapi.Schema(type=openapi.TYPE_NUMBER),
                 "currency": openapi.Schema(type=openapi.TYPE_STRING, default="USD"),
             },
