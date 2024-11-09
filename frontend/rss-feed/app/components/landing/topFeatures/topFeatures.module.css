@@ -1,0 +1,74 @@
+/* TopFeatures.module.css */
+.topFeatures {
+  width: 100%;
+  padding: 64px 0;
+  background-color: white;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.titleWrapper {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Стилі для планшетів */
+@media (max-width: 1024px) {
+  .featuresGrid {
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    max-width: 800px;
+    margin: 0 auto;
+    gap: 24px;
+    place-items: center;
+    place-content: center;
+  }
+}
+
+/* Стилі для мобільних */
+@media (max-width: 767px) {
+  .topFeatures {
+    
+    padding: 40px 0;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .container {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .featuresGrid {
+    display: grid;
+    grid-template-columns: minmax(280px, 320px);
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 320px;
+  }
+}
+

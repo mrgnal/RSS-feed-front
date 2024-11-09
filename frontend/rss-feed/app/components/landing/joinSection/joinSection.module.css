@@ -1,0 +1,46 @@
+.root {
+    background-color: #07B25D;
+    padding: 60px 20px;
+    text-align: center;
+    color: white;
+  }
+  
+  .content {
+    max-width: 1024px;
+    margin: 0 auto;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 40px;
+  }
+  
+  .buttonWrapper {
+    margin-bottom: 50px;
+  }
+  
+  .advantagesWrapper {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+  
+  .advantage {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .checkIcon {
+    width: 20px;
+    height: 20px;
+    fill: white;
+  }
+  
+  .advantageText {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+  

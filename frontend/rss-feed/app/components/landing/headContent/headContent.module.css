@@ -1,0 +1,84 @@
+.root {
+  display: flex;
+  justify-content: center;
+  padding: 10vh 4vh 20px;
+  background-color: #07B25D;
+}
+
+.contentWrapper {
+  max-width: 1200px; /* Збільшено ширину контейнера */
+  text-align: center;
+}
+
+.title {
+  font-size: 3.5rem; /* Збільшено розмір */
+  font-weight: bold;
+  color: white;
+  margin-bottom: 24px; /* Трохи збільшено відступ */
+}
+
+.addition {
+  display: block;
+  font-size: 1.6rem; /* Збільшено розмір */
+  font-weight: 500;
+  color: #E5E7EB;
+  margin-top: 12px;
+}
+
+.subtitle {
+  font-size: 1.5rem; /* Збільшено розмір */
+  color: #F3F4F6;
+  margin-bottom: 36px; /* Трохи збільшено відступ */
+}
+
+.statsSection {
+  margin-top: 60px; /* Збільшено відступ */
+  color: white;
+}
+
+.statsTitle {
+  font-size: 1.4rem; /* Збільшено розмір */
+  margin-bottom: 16px;
+}
+
+.statsRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px; /* Трохи збільшено відступ між елементами */
+}
+
+.statNumber {
+  font-size: 2.2rem; /* Збільшено розмір */
+  font-weight: bold;
+}
+
+.statSubtitle {
+  font-size: 1.3rem; /* Збільшено розмір */
+  text-align: left;
+}
+
+
+@media (max-width: 768px) {
+  .contentWrapper {
+    max-width: 90%;
+  }
+  .title {
+    font-size: 2.5rem;
+  }
+  .addition {
+    font-size: 1.3rem;
+  }
+  .subtitle {
+    font-size: 1.2rem;
+  }
+  .statsRow {
+    gap: 15px;
+  }
+  .statNumber {
+    font-size: 1.8rem;
+  }
+  .statSubtitle {
+    font-size: 1rem;
+  }
+}

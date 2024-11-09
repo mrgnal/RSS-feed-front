@@ -1,0 +1,22 @@
+/* GetStartedButton.module.css */
+
+.button {
+    background-color: #f09503;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #d58402; 
+  }
+  
+  .button:focus {
+    outline: none;
+  }
+  

@@ -1,0 +1,53 @@
+.root {
+    padding: 80px 0;
+    background-color: #fff;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  
+  .title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 48px;
+  }
+  
+  .list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .item {
+    display: flex;
+    justify-content: center;
+  }
+  
+  @media (max-width: 1024px) {
+    .list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .root {
+      padding: 60px 0;
+    }
+  
+    .list {
+      grid-template-columns: 1fr;
+    }
+  
+    .title {
+      font-size: 28px;
+      margin-bottom: 36px;
+    }
+  }
