@@ -1,0 +1,30 @@
+/* plansPage.module.css */
+
+.faqContainer {
+    margin-top: 5vh;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    
+  }
+  
+  .faqTitle {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 4vh;
+  }
+  
+  .faqQuestion {
+    border-radius: 15px;
+    color: black;
+    font-weight: bold;
+  }
+  
+  .faqAnswer {
+    color: #6c757d;
+  }
+  
+  .faqItem {
+    margin-top: 15px;
+  }
+  

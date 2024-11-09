@@ -1,0 +1,105 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    background-color: rgb(249 250 251);
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .subscriptionWrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3rem;
+  }
+  
+  .plansWrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    align-items: center;
+    justify-items: center;
+    width: 100%;
+  }
+  
+  .planColumn {
+    width: 100%;
+    max-width: 24rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .cardWrapper {
+    width: 100%;
+  }
+  
+  .featuresList {
+    margin-top: 1.5rem;
+    width: 100%;
+  }
+  
+  .dotsContainer {
+    display: none;
+  }
+
+  .freePlanContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрує компоненти по горизонталі */
+    margin-top: 2rem; /* Відступ зверху для візуального відділення */
+    gap: 1rem; /* Відступ між компонентами */
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 2rem 0;
+    }
+  
+    .plansWrapper {
+      display: flex;
+      overflow: hidden;
+      scroll-snap-type: x mandatory;
+      gap: 0;
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  
+    .planColumn {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      padding: 0 1rem;
+      transition: transform 0.3s ease;
+      transform: translateX(calc(-100% * var(--slide-index, 0)));
+    }
+  
+    .dotsContainer {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+  
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #D1D5DB;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+  
+    .activeDot {
+      background-color: #07B25D;
+    }
+  }

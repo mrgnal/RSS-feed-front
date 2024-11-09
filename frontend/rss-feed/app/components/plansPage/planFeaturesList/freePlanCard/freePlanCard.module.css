@@ -1,0 +1,86 @@
+.card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #ffffff;
+    max-width: 100%; /* Збільшена ширина */
+    margin: 1rem auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    flex-wrap: wrap;
+  }
+  
+  .info {
+    display: flex;
+    flex-direction: column;
+    margin-right: 1rem; /* Відступ між текстом і кнопкою */
+  }
+  
+  .title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .description {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  
+  .priceContainer {
+    display: flex;
+    align-items: baseline;
+    margin-top: 1rem; /* Відступ між текстом і ціною */
+  }
+  
+  .price {
+    font-size: 1.5rem; /* Зменшений розмір шрифту ціни */
+    font-weight: bold;
+    color: #9ca3af;
+    margin-right: 0.25rem;
+  }
+  
+  .period {
+    font-size: 0.75rem; 
+    color: #9ca3af;
+  }
+  
+  .button {
+    padding: 0.5rem 1rem;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #374151;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+    margin-left: 10px; 
+  }
+  
+  .button:hover {
+    background-color: #f3f4f6;
+  }
+  
+  @media (max-width: 768px) {
+    .card {
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 90%;
+      padding: 1rem;
+    }
+  
+    .priceContainer {
+      margin-top: 0.5rem;
+    }
+  
+    .button {
+      align-self: flex-end; /* Вирівнювання кнопки в кінці */
+      width: 100%; /* Повна ширина кнопки для мобільних пристроїв */
+      margin-top: 1rem;
+    }
+  }
+  
