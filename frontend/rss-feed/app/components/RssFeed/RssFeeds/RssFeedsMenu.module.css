@@ -6,6 +6,7 @@
     justify-content: space-between;
     overflow: hidden;
     transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
+    z-index: 100;
 }
 
 .menuVisible {
@@ -54,6 +55,11 @@
     padding: 5px;
 }
 
+.currentPageButton{
+    background-color: rgb(0, 107, 0);
+    font-weight: 600;
+}
+
 .menuSearch{
     display: flex;
     flex-direction: row;
@@ -73,7 +79,12 @@
 
 .menuSearchInput{
     background-color: #007300;
+    color: white;
     width: 100%;
+}
+
+.menuSearchInput::placeholder{
+    color: white;
 }
 
 .menuSearchInput:focus{
@@ -173,4 +184,31 @@
     gap: 8px;
     white-space: nowrap;
     width: 100%;
+}
+
+@media screen and (max-width: 740px){
+    .menu{
+        transition: height 0.3s ease-in-out;
+    }
+
+    .menuVisible{
+        width: 100%;
+        transition: transform 0.3s ease-in-out;
+        transform: translateX(0);
+        height: 100%;
+        position: absolute;
+    }
+    
+    .menuHidden{
+        transition: transform 0.3s ease-in-out;
+        transform: translateX(-100%);
+        position: absolute;
+        height: 100%;
+        width: 100%;
+    }
+
+    .buttonHidden{
+        width: 0;
+    }
+
 }

@@ -1,10 +1,9 @@
 import React, { MouseEventHandler, useEffect, useRef } from 'react'
-import style from './CollectionEdit.module.css'
 import { createPortal } from 'react-dom';
+import style from './FeedEdit.module.css'
 import TypeButton from '../../TypeButton';
 
-const CollectionEdit = ({isOpen, close} : {isOpen: boolean, close: MouseEventHandler<HTMLButtonElement>}) => {
-
+const FeedEdit = ({isOpen, close} : {isOpen: boolean, close: MouseEventHandler<HTMLButtonElement>}) => {
   const dialog = useRef<HTMLDialogElement | null>(null);
 
   const [isClient, setIsClient] = React.useState<boolean>(false);
@@ -33,7 +32,7 @@ const CollectionEdit = ({isOpen, close} : {isOpen: boolean, close: MouseEventHan
       <div>
         <form id="collectionEdit" className={style.form}>
           <div className={style.inputContainer}>
-            <span>Collection title</span>
+            <span>Feed title</span>
             <input className={style.input} name='title'/>
           </div>
           <div className={style.inputContainer}>
@@ -43,6 +42,10 @@ const CollectionEdit = ({isOpen, close} : {isOpen: boolean, close: MouseEventHan
           <div className={style.inputContainer}>
             <span>Icon URL</span>
             <input className={style.input} name='iconURL'/>
+          </div>
+          <div className={style.inputContainer}>
+            <span>Feed URL</span>
+            <input className={style.input} name='feedURL'/>
           </div>
         </form>
       </div>
@@ -55,4 +58,4 @@ const CollectionEdit = ({isOpen, close} : {isOpen: boolean, close: MouseEventHan
   ): null
 }
 
-export default CollectionEdit
+export default FeedEdit

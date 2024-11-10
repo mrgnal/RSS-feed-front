@@ -11,7 +11,36 @@
     gap: 10px;
 }
 
+.left{
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.right{
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
 .activeButton{
     background-color: var(--main-color);
     color: white;
+}
+
+@media screen and (max-width: 550px) {
+    .rssTypeButtonContainer{
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .left{
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
+    }
+    
+    .right{
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
 }

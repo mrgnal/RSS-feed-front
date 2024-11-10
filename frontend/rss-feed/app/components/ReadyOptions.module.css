@@ -30,8 +30,19 @@
     width: 100%;
 }
 
+@media screen and (max-width: 1000px){
+    .websitesCardContainer{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .websitesCardContainer{
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
 .line{
-    max-width: 520px;
     width: 100%;
 }
 
@@ -40,12 +51,25 @@
     flex-direction: row;
     width: 100%;
     justify-content: space-between;
+    align-items: center;
 }
 
 .searchText{
     font-size: 24px;
     font-weight: 700;
     color: #424242;
+}
+
+@media screen and (max-width: 1000px) {
+    .searchText{
+        display: flex;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        line-height: 22px;
+        color: rgb(153, 153, 153);
+        align-items: center;
+    }
 }
 
 .search{
@@ -55,6 +79,7 @@
     padding: 5px 10px;
     border: 1px solid #BBBBBC;
     border-radius: 5px;
+    max-height: 44px;
 }
 
 .inputSearch:focus{
@@ -78,13 +103,13 @@
     display: inline-flex;
     gap: 40px;
     flex-direction: column;
-    width: 25%;
 }
 
 .newsletterContainerAndSearch{
     display: inline-flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
 }
 
 .newsletterSearchContainer{
@@ -106,6 +131,25 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
+}
+
+@media screen and (max-width:1000px) {
+    .newsletterContainer{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width:630px) {
+    .newsletterContainer{
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media screen and (max-width:570px){
+    .newsletterSearchContainer{
+        flex-direction: column;
+        gap: 10px;
+    }
 }
 
 .createNewsletter{
