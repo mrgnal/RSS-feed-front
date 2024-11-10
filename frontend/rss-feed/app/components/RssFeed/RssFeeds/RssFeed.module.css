@@ -1,0 +1,64 @@
+.feed{
+    display: inline-flex;
+    flex-direction: column;
+    border: 1px solid rgb(231, 231, 231);
+    border-radius: 5px;
+    padding: 16px;
+    gap: 10px;
+    max-width: 530px;
+    width: 100%;
+    height: fit-content;
+    cursor: pointer;
+}
+
+.point{
+    width: 5px;
+    height: 5px;
+    background-color: var(--main-color);
+    border-radius: 3px;
+}
+
+.feedTitle{
+    font-weight: 600;
+    font-size: 14px;
+    color: rgb(66, 66, 66);
+    letter-spacing: 0.5px;
+}
+
+.feedTitleContainer{
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.feedUrl{
+    font-size: 14px;
+    line-height: 19px;
+    letter-spacing: 0.1px;
+    font-weight: 500;
+    color: rgb(102, 102, 102);
+}
+
+.panel{
+    display: inline-flex;
+    width:100%;
+    justify-content: end;
+    gap: 15px;
+}
+
+.feedInfo{
+    display: inline-flex;
+    flex-direction: row;
+    gap: 10px;
+    font-size: 16px;
+}
+
+.feedText{
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.image{
+    border-radius: 24px;
+    background-color: black;
+}

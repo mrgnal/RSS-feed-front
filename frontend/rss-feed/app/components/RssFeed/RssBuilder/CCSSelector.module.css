@@ -1,0 +1,37 @@
+.ccsContainer{
+    display: inline-flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.ccsTitle{
+    font-weight: 600;
+    font-size: 12px;
+    color: rgb(66, 66, 66);
+}
+
+.ccsInput{
+    border-radius: 5px;
+    color: rgb(71, 77, 87);
+    font-size: 14px;
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(204, 204, 204);
+    width: calc(100% - 42px);
+}
+
+.ccsSelect{
+    display: inline-flex;
+    gap: 10px;
+    height: 32px;
+}
+
+.button{
+    border-radius: 5px;
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(204, 204, 204);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    padding: 6px;
+}

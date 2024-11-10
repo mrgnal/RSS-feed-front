@@ -1,0 +1,46 @@
+.rssTypeButton{
+    width: 200px;
+    height: 40px;
+    padding: 10px;
+    display: inline-flex;
+    border: 1px solid var(--main-color);
+    font-size: 24px;
+    align-items: center;
+    justify-content: center;
+    align-content: space-between;
+    gap: 10px;
+}
+
+.left{
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.right{
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.activeButton{
+    background-color: var(--main-color);
+    color: white;
+}
+
+@media screen and (max-width: 550px) {
+    .rssTypeButtonContainer{
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .left{
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
+    }
+    
+    .right{
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+}

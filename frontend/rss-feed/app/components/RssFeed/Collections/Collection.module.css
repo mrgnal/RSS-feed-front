@@ -1,0 +1,27 @@
+.collection{
+    width: 266px;
+    border: 1px solid rgb(231, 231, 231);
+    max-height: 480px;
+    overflow: scroll;
+}
+
+.collectionHeader{
+    border-bottom: 1px solid rgb(231, 231, 231);
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px 8px;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+}
+
+.collectionContent{
+    background-color: #fafafa;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+    padding: 8px 0;
+}

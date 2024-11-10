@@ -1,0 +1,19 @@
+.collectionElement{
+    background-color: white;
+    border: 1px solid rgb(231, 231, 231);
+}
+
+.collectionTitle{
+    color: rgb(66, 66, 66);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 19px;
+    margin: 5px 10px;
+}
+
+.collectionAuthor{
+    font-size: 10px;
+    font-weight: 500;
+    color: rgb(153, 153, 153);
+    margin: 5px 10px;
+}

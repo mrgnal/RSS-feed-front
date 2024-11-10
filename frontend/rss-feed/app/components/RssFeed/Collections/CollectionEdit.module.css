@@ -1,0 +1,73 @@
+.collectionEdit{
+    padding: 15px;
+    display: inline-flex;
+    flex-direction: column;
+    border-radius: 5px;
+    gap: 20px;
+    padding-bottom: 0;
+    max-width: 500px;
+    width: 100%;
+}
+
+.headContainer{
+    position: relative;
+    display: inline-flex;
+    justify-content: space-between;
+}
+
+.close{
+    transform: rotate(45deg);
+    font-size: 30px;
+    position: absolute;
+    top: -5;
+    right: 15;
+}
+
+.inputContainer{
+    display: inline-flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.input{
+    width: 100%;
+    border: 1px solid rgb(231, 231, 231);
+}
+
+.editCollection{
+    font-size: 22px;
+}
+
+.form{
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.confirm{
+    background-color: var(--main-color);
+    color: white;
+    border-radius: 5px;
+    display: inline-flex;
+    gap: 8px;
+    padding: 8px;
+}
+
+.decline{
+    background-color: white;
+    border: 1px solid var(--second-color);
+    color: var(--second-color);
+    border-radius: 5px;
+    display: inline-flex;
+    gap: 8px;
+    padding: 8px;
+}
+
+.buttonContainer{
+    display: inline-flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 16px;
+}

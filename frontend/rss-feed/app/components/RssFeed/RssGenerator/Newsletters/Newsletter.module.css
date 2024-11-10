@@ -1,0 +1,59 @@
+.newsletter{
+    border: 1px solid rgb(231, 231, 231);
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 10px 0px;
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.contentContainer{
+    display: inline-flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 16px;
+    height: 100%;
+}
+
+.titleContainer{
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.title{
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.textContainer{
+    display: inline-flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.text{
+    font-size: 13px;
+    color: rgb(102, 102, 102);
+}
+
+.categoryContainer{
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.buttonContainer{
+    border-top: 1px solid rgb(231, 231, 231);
+    display: inline-flex;
+    justify-content: space-around;
+    width: 100%;
+    gap: 24px;
+    padding: 16px;
+    justify-content: center;
+}
+
+.visitButton{
+    color: var(--main-color);
+    padding: 12px;
+    border-radius: 5px;
+}
