@@ -1,0 +1,131 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+.closeButton {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    padding: 4px;
+}
+
+.closeButton:hover {
+    color: #333;
+}
+
+.modalHeader {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.modalIcon {
+    margin-bottom: 16px;
+}
+
+.modalTitle {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.planDetails {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.planTitle {
+    font-weight: 500;
+    color: #333;
+}
+
+.planPrice {
+    font-weight: 600;
+    color: #333;
+}
+
+.paymentMethods {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.paymentOption {
+    flex: 1;
+}
+
+.methodButton {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #666;
+}
+
+.paymentOption.active .methodButton {
+    border-color: #0070ba;
+    color: #0070ba;
+}
+
+.methodIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.paypalButton {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 8px;
+    background: #ffc439;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.paypalButton:hover {
+    background: #f4bb38;
+}
+
+.paypalLogo {
+    height: 26px;
+    width: auto;
+}

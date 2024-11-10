@@ -1,15 +1,24 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import GetStartedButton from '@/app/components/landing/button/button';
 import styles from './joinSection.module.css';
 
 export default function JoinSection() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check if the user is logged in by looking for user data in localStorage
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    setIsLoggedIn(!!userData); // Set login status based on user data presence
+  }, []);
+
   return (
     <section className={styles.root}>
       <div className={styles.content}>
         <h2 className={styles.title}>Join thousands of happy users!</h2>
         <div className={styles.buttonWrapper}>
-          <GetStartedButton href="/rss-feed" />
+          <GetStartedButton href={isLoggedIn ? '/my-feeds' : '/pages/Auth/login'} />
         </div>
         <div className={styles.advantagesWrapper}>
           <div className={styles.advantage}>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { setRefreshTokenTimeout } from '@/app/utils/authService';
-import PlansCard from '@/app/components/landing/cardComponents/plansCard/plansCard';
+import PlansCard from '@/app/components/plansPage/plansCardForPayment/plansCard';
+import PaymentModal from '@/app/components/modals/paypalModal/paypalModal';
 import styles from './plansPage.module.css';
 import FreePlanCard from '@/app/components/plansPage/planFeaturesList/freePlanCard/freePlanCard';
 import BasicPlan from '@/app/components/plansPage/planFeaturesList/basicPlan';
@@ -15,8 +16,10 @@ export default function PlansPage() {
   const [selectedPlan, setSelectedPlan] = useState('Developer');
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState({ price: 0, planTitle: '' });
 
-  // Додаємо координати для свайпів
+  // Touch coordinates for swipe
   const [startX, setStartX] = useState(0);
   const [endX, setEndX] = useState(0);
 
@@ -38,9 +41,8 @@ export default function PlansPage() {
         price: 9,
         cents: 99,
         period: 'month',
-        buttonLink: '/basic-plan',
         height: 'small' as const,
-        buttonText: 'Activate now'
+
       },
       {
         title: 'Developer',
@@ -48,17 +50,13 @@ export default function PlansPage() {
         cents: 99,
         period: 'month',
         isHighlighted: true,
-        buttonLink: '/developer-plan',
-        buttonText: 'Activate now'
       },
       {
         title: 'Pro',
         price: 99,
         cents: 99,
         period: 'month',
-        buttonLink: '/pro-plan',
         height: 'small' as const,
-        buttonText: 'Activate now'
       },
     ],
     yearly: [
@@ -69,9 +67,7 @@ export default function PlansPage() {
         period: 'month',
         saveAmount: 20,
         savePeriod: 'monthly',
-        buttonLink: '/basic-plan',
         height: 'small' as const,
-        buttonText: 'Activate now'
       },
       {
         title: 'Developer',
@@ -81,8 +77,6 @@ export default function PlansPage() {
         saveAmount: 40,
         savePeriod: 'monthly',
         isHighlighted: true,
-        buttonLink: '/developer-plan',
-        buttonText: 'Activate now'
       },
       {
         title: 'Pro',
@@ -91,15 +85,24 @@ export default function PlansPage() {
         period: 'month',
         saveAmount: 200,
         savePeriod: 'monthly',
-        buttonLink: '/pro-plan',
         height: 'small' as const,
-        buttonText: 'Activate now'
       },
     ],
   };
 
   const handleSubscriptionChange = (isYearly: boolean) => {
     setIsYearly(isYearly);
+  };
+
+  const handlePlanClick = (plan: any) => {
+    const basePrice = Number(plan.price) + Number(plan.cents) / 100;
+    const finalPrice = isYearly ? Math.floor(basePrice * 12) : basePrice;
+    
+    setModalData({
+      price: finalPrice,
+      planTitle: `${plan.title} Plan`
+    });
+    setIsModalOpen(true);
   };
 
   const currentPlans = isYearly ? plans.yearly : plans.monthly;
@@ -118,10 +121,8 @@ export default function PlansPage() {
 
   const handleTouchEnd = () => {
     if (startX - endX > 50) {
-      // Свайп вліво
       setCurrentSlide((prev) => (prev + 1) % currentPlans.length);
     } else if (endX - startX > 50) {
-      // Свайп вправо
       setCurrentSlide((prev) => (prev - 1 + currentPlans.length) % currentPlans.length);
     }
   };
@@ -163,7 +164,10 @@ export default function PlansPage() {
               } as React.CSSProperties : {}}
             >
               <div className={styles.cardWrapper}>
-                <PlansCard {...plan} />
+                <PlansCard 
+                  {...plan} 
+                  onButtonClick={() => handlePlanClick(plan)}
+                />
               </div>
               <div className={styles.featuresList}>
                 {index === 0 && <BasicPlan />}
@@ -185,7 +189,14 @@ export default function PlansPage() {
         />
         <FreePlan layout='horizontal' isResponsive={true}/>
       </div>
-          <Questions/>
+      <Questions/>
+
+      <PaymentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        planTitle={modalData.planTitle}
+        price={modalData.price}
+      />
     </div>
   );
 }

@@ -1,17 +1,46 @@
 'use client';
-import { useState } from 'react';
-import  Image  from 'next/image';
+
+import  React, { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { login } from '@/app/utils/authService';
 import PasswordInput from '@/app/components/Auth/passwordInput/passwordInput';
-import styles from '@/app/components/Auth/login/Login.module.css';
+import styles from '@/app/components/Auth/login/login.module.css';
 import { Link } from '@nextui-org/react';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({ email: '', password: '', general: '' });
+  const [googleAuthUrl, setGoogleAuthUrl] = useState('');
   const router = useRouter();
+
+  // Fetch the Google login URL from your API
+  const fetchGoogleAuthUrl = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/google/login/', {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'X-CSRFTOKEN': 'your-csrf-token-here',  // Replace with your CSRF token
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setGoogleAuthUrl(data.auth_url);  // Store the Google login URL
+      } else {
+        console.error('Failed to fetch Google Auth URL');
+      }
+    } catch (error) {
+      console.error('Error fetching Google Auth URL:', error);
+    }
+  };
+
+  // Call this function when component mounts to fetch Google Auth URL
+  React.useEffect(() => {
+    fetchGoogleAuthUrl();
+  }, []);
 
   const validateForm = () => {
     const newErrors = { email: '', password: '', general: '' };
@@ -47,13 +76,33 @@ export default function LoginForm() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    if (googleAuthUrl) {
+      // Redirect user to the Google login URL
+      window.location.href = googleAuthUrl;
+    } else {
+      console.error('Google auth URL is not available.');
+    }
+  };
+
   return (
     <div className={styles.loginContainer}>
       <form className={styles.loginCard} onSubmit={onSubmit}>
         <h1 className={styles.loginTitle}>Sign in to RSS</h1>
 
-        <button type="button" className={`${styles.socialButton} ${styles.googleButton}`}>
-          <Image src="/google-icon.svg" alt="Google icon" width={20} height={20} className={styles.googleIcon} />
+        {/* Google login button */}
+        <button
+          type="button"
+          className={`${styles.socialButton} ${styles.googleButton}`}
+          onClick={handleGoogleLogin}
+        >
+          <Image
+            src="/google-icon.svg"
+            alt="Google icon"
+            width={20}
+            height={20}
+            className={styles.googleIcon}
+          />
           Sign in with Google
         </button>
 
@@ -75,11 +124,11 @@ export default function LoginForm() {
 
         <div className={styles.inputGroup}>
           <PasswordInput
-            name='password'
+            name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             error={errors.password}
-            placeholder='Password'
+            placeholder="Password"
           />
           <div className={styles.forgotPasswordContainer}>
             <Link href={`/pages/Auth/restorePassword?email=${encodeURIComponent(email)}`} className={styles.forgotPassword}>

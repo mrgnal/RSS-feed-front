@@ -1,0 +1,130 @@
+.card {
+  position: relative;
+  width: 280px;
+  height: 300px;
+  padding: 24px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.cardSmall {
+  height: 270px;
+}
+
+.highlighted {
+  border: 2px solid #07B25D;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e6f7ee;
+  color: #07B25D;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 16px 0;
+}
+
+.priceContainer {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.dollarSign {
+  font-size: 20px;
+  font-weight: 500;
+  color: #07B25D;
+  margin-top: 4px;
+}
+
+.price {
+  font-size: 32px;
+  font-weight: 600;
+  color: #07B25D;
+}
+
+.priceDetails {
+  display: flex;
+  align-items: flex-end;
+  margin-left: 2px;
+}
+
+.cents {
+  font-size: 20px;
+  font-weight: 500;
+  color: #07B25D;
+}
+
+.period {
+  font-size: 14px;
+  color: #6b7280;
+  margin-left: 2px;
+}
+
+.saveInfo {
+  color: #3E95F8;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.billing {
+  color: #07B25D;
+  font-size: 14px;
+  margin-bottom: auto;
+}
+
+.button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #07B25D;
+  background: white;
+  color: #07B25D;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background: #f0f9f4;
+}
+
+.buttonHighlighted {
+  background: #07B25D;
+  color: white;
+}
+
+.buttonHighlighted:hover {
+  background: #069950;
+}
+
+@media (max-width: 400px) {
+  .card {
+      width: 100%;
+      max-width: 280px;
+  }
+}

@@ -1,0 +1,161 @@
+.profileContainer {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .profileCard {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.289);
+  }
+  
+  .profileHeader {
+    margin-bottom: 24px;
+  }
+  
+  .avatarSection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .verifiedBadge {
+    position: absolute;
+    bottom: 1px;
+    right: -2px;
+    width: 16px;
+    height: 16px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+  
+  .userInfo {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .username {
+    font-weight: 500;
+    font-size: 16px;
+  }
+  
+  .email {
+    font-size: 14px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .formGroup label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #4CAF50;
+  }
+  
+  .emailNote {
+    font-size: 14px;
+    color: #666;
+    margin: 4px 0;
+  }
+  
+  .saveButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    align-self: flex-start;
+  }
+  
+  .saveButton:hover {
+    background-color: #45a049;
+  }
+  
+  .deleteSection {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .deleteButton {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .deleteButton:hover {
+    background-color: #c82333;
+  }
+
+  .saveButtonDisabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #cccccc;
+  }
+  
+  .saveButtonDisabled:hover {
+    background-color: #cccccc;
+  }
+
+
+  .forgotPassword {
+    color: #666; 
+    margin-bottom: 1rem;
+  }
+  
+  .restoreLink {
+    color: #07B25D; 
+    text-decoration: none;
+  }
+  
+  .restoreLink:hover {
+    text-decoration: underline;
+  }
+
+
+  .avatar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .userIcon {
+    border-radius: 50%;
+    object-fit: cover;
+  }

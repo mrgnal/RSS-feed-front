@@ -1,40 +1,106 @@
 const API_URL = 'http://127.0.0.1:8000/api';
 
 export async function login(email: string, password: string) {
-  // Надсилаємо POST-запит на /login/ endpoint
+  // Clear any existing tokens in localStorage
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
   localStorage.removeItem('user');
 
-  const response = await fetch(`${API_URL}/login/`, {
+  try {
+    const response = await fetch(`${API_URL}/login/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      // Check for 401 Unauthorized response and display a popup error
+      if (response.status === 401) {
+        showErrorPopup('Unauthorized access. Please check your email or password and try again.');
+      }
+
+      throw new Error(errorData.message || 'Login failed');
+    }
+
+    // Parse response data
+    const data = await response.json();
+    const accessToken = data?.access_token;
+    const refreshToken = data?.refresh_token;
+
+    console.log('Login Response:', data);
+
+    if (accessToken && refreshToken) {
+      const currentAccessToken = getAccessToken();
+
+      // Store tokens if none are currently saved
+      if (!currentAccessToken) {
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('user', JSON.stringify(data));
+
+        setRefreshTokenTimeout();
+      } else {
+        console.warn('Tokens already exist in localStorage, skipping save.');
+      }
+
+      return accessToken;
+    } else {
+      throw new Error('Tokens are missing from the response');
+    }
+  } catch (error) {
+    console.error('Login Error:', error);
+    throw error; // Rethrow error to be handled by calling function if needed
+  }
+}
+
+// Show error message using a simple popup
+function showErrorPopup(message: string) {
+
+  window.alert(message);
+}
+
+
+export async function googleLogin(googleResponse: any) {
+  // Clear any existing tokens in localStorage before starting the login process
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
+
+  const { tokenId } = googleResponse;
+
+  // Send tokenId to your backend to verify the Google token and get access and refresh tokens
+  const response = await fetch(`${API_URL}/login/google/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ tokenId }),
   });
 
-  // Обробляємо помилку, якщо запит не виконано успішно
+  // Handle error if the response is not successful
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || 'Login failed');
+    throw new Error(errorData.message || 'Google login failed');
   }
 
-  // Отримуємо токени з відповіді
+  // Get the tokens from the backend response
   const data = await response.json();
   const accessToken = data?.access_token;
   const refreshToken = data?.refresh_token;
 
-  console.log('Login Response:', data);
+  console.log('Google Login Response:', data);
 
-  // Перевіряємо, чи отримали ми обидва токени
+  // Ensure both tokens are present in the response
   if (accessToken && refreshToken) {
-    // Перевіряємо, чи вже є токени в `localStorage`
+    // Check if tokens already exist in localStorage
     const currentAccessToken = getAccessToken();
     if (!currentAccessToken) {
-      // Якщо токенів ще немає, зберігаємо їх у localStorage
+      // If tokens don't exist in localStorage, save them
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       localStorage.setItem('user', JSON.stringify(data));
 
+      // Set a timeout to refresh the access token if necessary (you will need to implement this function)
       setRefreshTokenTimeout();
     } else {
       console.warn('Tokens already exist in localStorage, skipping save.');
@@ -45,6 +111,7 @@ export async function login(email: string, password: string) {
     throw new Error('Tokens are missing from the response');
   }
 }
+
 
 export function logout() {
   // Видаляємо токени з localStorage
