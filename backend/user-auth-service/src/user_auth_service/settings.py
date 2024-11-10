@@ -43,8 +43,7 @@ SECRET_KEY = 'django-insecure-fo+zemiz4q!)3s3%z8rrz3%0kspph&64_1zczl^a&6m+&u(vu)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['172.28.0.20', '0.0.0.0', 'localhost']
 
 # Application definition
 
@@ -128,7 +127,6 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "none"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-
 ]
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

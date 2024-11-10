@@ -28,9 +28,9 @@ load_dotenv()
 SECRET_KEY = os.getenv('RSS_SITES_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('RSS_SITES_DEBUG')
+DEBUG = os.getenv('RSS_SAVES_DEBUG')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['172.28.0.50', '0.0.0.0', 'localhost']
 
 
 # Application definition

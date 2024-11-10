@@ -1,14 +1,14 @@
 from django.db import models
 import uuid
 
-class RssGroup(models.Model):
+class ArticleCollection(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     user_id = models.UUIDField()
     title = models.CharField(max_length=256)
 
 class Article(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
-    group_id = models.ForeignKey(RssGroup, on_delete=models.CASCADE, related_name='articles')
+    collection_id = models.ForeignKey(ArticleCollection, on_delete=models.CASCADE, related_name='articles')
 
     site_id = models.TextField()
     title = models.CharField(max_length=256)

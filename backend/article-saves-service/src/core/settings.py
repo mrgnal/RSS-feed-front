@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('RSS_SAVES_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('RSS_SAVES_DEBUG')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['172.28.0.60', '0.0.0.0', 'localhost', '*']
 
 
 # Application definition
@@ -77,6 +77,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':[
+        'app.authentication.ExternalAuthServiceAuthentication',
+    ]
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
