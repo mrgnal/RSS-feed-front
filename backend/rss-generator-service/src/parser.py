@@ -1,7 +1,6 @@
 from playwright.sync_api import sync_playwright
 
 def fetch_full_page(url):
-
     with sync_playwright() as p:
 
         browser = p.chromium.launch(headless=True)
@@ -19,4 +18,5 @@ def save_page_in_file(page, file_path):
         print(f"File: {file_path} saved")
     except Exception as e:
         print(f"Error saving: {e}")
+
 
