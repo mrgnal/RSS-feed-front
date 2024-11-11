@@ -245,6 +245,7 @@ class CustomTokenVerifyView(TokenVerifyView):
                     'id': openapi.Schema(type=openapi.TYPE_STRING, description='User ID'),
                     'username': openapi.Schema(type=openapi.TYPE_STRING, description='Username'),
                     'email': openapi.Schema(type=openapi.TYPE_STRING, description='User email'),
+                    'is_superuser': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the user a superuser'),
                 },
             ),
         }
@@ -262,6 +263,7 @@ class CustomTokenVerifyView(TokenVerifyView):
                         'id': user.id,
                         'username': user.username,
                         'email': user.email,
+                        'is_superuser': user.is_superuser,
                     }
                     response.data['user_info'] = user_info
                 except User.DoesNotExist:

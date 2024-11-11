@@ -24,7 +24,7 @@ class CustomUserManager(UserManager):
         extra_fields.setdefault('is_email_verified', False)
         return self._create_user(username, email, password, **extra_fields)
 
-    def create_superuser(self, username, email=None, password=None, **extra_fields):
+    def create_superuser(self, username='Empty', email=None, password=None, **extra_fields):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_email_verified', True)
         return self._create_user(username, email, password, **extra_fields)

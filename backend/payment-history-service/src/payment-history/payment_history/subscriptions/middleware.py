@@ -24,9 +24,11 @@ EXEMPT_PATHS = [
     '/api/subscription-types/',
     r'^/api/subscription-types/\d+/$',
     '/swagger/',
-    '/admin/'
 ]
 
+ADMIN_PATHS = [
+    '/admin/',
+]
 
 class TokenVerificationMiddleware:
     def __init__(self, get_response):
@@ -41,6 +43,11 @@ class TokenVerificationMiddleware:
         token = request.META.get('HTTP_AUTHORIZATION')
         if token:
             user_info = verify_token(token.split(' ')[1])
+            if any(re.match(pattern, request.path) for pattern in ADMIN_PATHS):
+                print(user_info)
+                if not user_info.get('user_info', {}).get('is_superuser', False) is True:
+                    return JsonResponse({'error': 'Access denied: Superuser privileges required'},
+                                        status=status.HTTP_403_FORBIDDEN)
             print(user_info)
             if not user_info:
                 return JsonResponse({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
