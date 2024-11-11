@@ -7,12 +7,10 @@ import uuid
 from .database import DATABASE_URL
 
 
-# Підключення до бази даних
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Визначення моделей
 class RSSFeed(Base):
     __tablename__ = 'rss_feeds'
 
@@ -31,7 +29,6 @@ class Builder(Base):
 
     feed = relationship("RSSFeed", back_populates="builder")
 
-# Створення таблиць у базі даних
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)
-    print("Таблиці створені успішно.")
+    print("Таблиці створені ")

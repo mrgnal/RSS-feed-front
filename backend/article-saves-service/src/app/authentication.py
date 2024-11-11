@@ -12,7 +12,7 @@ VERIFY_TOKEN_URL = USER_AUTH_URL + '/api/verify_token/'
 class ExternalAuthServiceAuthentication(BaseAuthentication):
     def authenticate(self, request):
 
-        token = request.headers.get('accessToken')
+        token = request.headers.get('Authorization').split(' ')[1]
 
         if not token:
             raise AuthenticationFailed('Authorization token is missing')
