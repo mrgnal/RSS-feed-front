@@ -100,7 +100,7 @@ class CollectionWithArticles(APIView):
         if not self.request.user:
             return Response({'detail': 'User unauthorized.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        collections = ArticleCollection.objects.filter(user_id=self.request.user.id)
+        collections = ArticleCollection.objects.filter(user_id=self.request.user.get('id'))
 
         collections_data = []
         for collection in collections:
