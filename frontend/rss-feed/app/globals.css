@@ -44,3 +44,7 @@ body {
   height: 0;
   position: fixed;
 }
+
+#root{
+  height: 100vh;
+}

@@ -8,6 +8,7 @@
     max-width: 530px;
     width: 100%;
     height: fit-content;
+    cursor: pointer;
 }
 
 .point{
