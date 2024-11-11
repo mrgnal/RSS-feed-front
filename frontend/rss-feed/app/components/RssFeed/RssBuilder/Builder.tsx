@@ -35,12 +35,6 @@ const Builder = ({ isOpen, close, url }: { isOpen: boolean; close: MouseEventHan
     event.preventDefault();
     const element = event.target as HTMLElement;
 
-    if(element.tagName.toLowerCase() == 'a'){
-      element.addEventListener("click", (e) => {
-        e.preventDefault();
-      })
-    }
-
     if (isSelecting) {
       let path = '';
       let currentElement: HTMLElement | null = element;
@@ -63,6 +57,10 @@ const Builder = ({ isOpen, close, url }: { isOpen: boolean; close: MouseEventHan
     setSelectedField(field);
   }
 
+  function handleAClick(e: MouseEvent){
+    e.preventDefault();
+  }
+
   function handleElementHover(event: MouseEvent) {
     const element = event.target as HTMLElement;
     element.style.border = '2px dashed red';
@@ -78,10 +76,16 @@ const Builder = ({ isOpen, close, url }: { isOpen: boolean; close: MouseEventHan
     if (iframeDocument) {
       const elements = iframeDocument.querySelectorAll<HTMLElement>("*");
       elements.forEach((element) => {
+        if(element.tagName.toLowerCase() == 'a'){
+          element.style.pointerEvents = 'none';
+          element.setAttribute('href', '#');
+          element.addEventListener("click", function(){});
+
+        }
         element.addEventListener("mouseover", handleElementHover as EventListener);
         element.addEventListener("mouseleave", handleElementLeave as EventListener);
       });
-    }
+    } 
   }
 
   useEffect(() => {
@@ -113,12 +117,13 @@ const Builder = ({ isOpen, close, url }: { isOpen: boolean; close: MouseEventHan
       if (isOpen) {
         dialog.current.classList.remove(style.hidden);
         dialog.current.showModal();
+         fetchHtmlFromApi();
       } else {
         dialog.current.classList.add(style.hidden);
         dialog.current.close();
       }
     }
-    fetchHtmlFromApi();
+   
   }, [isOpen]);
 
   return createPortal(
