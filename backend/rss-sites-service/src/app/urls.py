@@ -1,15 +1,12 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import *
-
-# router = DefaultRouter()
-# router.register(r'rss', RssViewSet)
-#
-# urlpatterns = [
-#     path('', include(router.urls)),
-# ]
-#
+from .views import RssChannelCountAPIView, RssChannelAPIView,RssChannelSourseAPIView
 
 urlpatterns =[
-    # path('api/events/', EventAPIView.as_view(), name='event-api')
+    path('channel/', RssChannelAPIView.as_view()),
+    path('channel/create', RssChannelAPIView.as_view()),
+    path('channel/<uuid:pk>/update', RssChannelAPIView.as_view()),
+    path('channel/<uuid:pk>/delete', RssChannelAPIView.as_view()),
+
+    path('channel/source', RssChannelSourseAPIView.as_view()),
+    path('channel/count', RssChannelCountAPIView.as_view()),
 ]

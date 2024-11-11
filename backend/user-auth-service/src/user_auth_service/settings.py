@@ -32,18 +32,19 @@ EMAIL_HOST_PORT = os.getenv('EMAIL_HOST_PORT')
 EMAIL_PORT = os.getenv('EMAIL_HOST_PORT')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 
+
 PASSWORD_RESET_TIMEOUT = 14400
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-fo+zemiz4q!)3s3%z8rrz3%0kspph&64_1zczl^a&6m+&u(vu)'
+SECRET_KEY = os.getenv('USER_AUTH_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('USER_AUTH_DEBUG')
 
-ALLOWED_HOSTS = ['172.28.0.20', '0.0.0.0', 'localhost']
+ALLOWED_HOSTS = [os.getenv('USER_AUTH_URL'), '0.0.0.0', 'localhost']
 
 # Application definition
 

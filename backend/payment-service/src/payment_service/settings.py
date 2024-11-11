@@ -16,18 +16,6 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-v70qw%+_$49=-qi9bbyoki#r&lxm85&1i8*c%3t+8gpjpv3@li'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['172.28.0.40', '0.0.0.0', 'localhost']
-
 load_dotenv()
 
 PAYPAL_MODE = os.getenv("PAYPAL_MODE", default="sandbox")
@@ -35,6 +23,18 @@ PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
 PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET")
 PAYPAL_RETURN_URL = os.getenv("PAYPAL_RETURN_URL")
 PAYPAL_CANCEL_URL = os.getenv("PAYPAL_CANCEL_URL")
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv('PAYMENT_KEY')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.getenv('PAYMENT_DEBUG')
+
+ALLOWED_HOSTS = [os.getenv('PAYMENT_URL'), '0.0.0.0', 'localhost']
+
+
 
 TEMPLATES = [
     {

@@ -13,9 +13,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from dotenv import load_dotenv
 
-
-
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$gw1+sfcl0(0o0$_i-3!_0iu(!q*%_-q$h9^agee2)*y@urzr!'
+SECRET_KEY = os.getenv('PAYMENT_HISTORY_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('PAYMENT_HISTORY_DEBUG')
 
-ALLOWED_HOSTS = ['172.28.0.30', '0.0.0.0', 'localhost']
+ALLOWED_HOSTS = [os.getenv('PAYMENT_HISTORY_URL'), '0.0.0.0', 'localhost']
 
 
 # Application definition

@@ -17,32 +17,32 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     networks:
       static_network:
-        ipv4_address: 172.28.0.10
+        ipv4_address: ${DB_HOST}
     ports:
       - '5432:5432'
 
-  zookeeper:
-    image: bitnami/zookeeper:latest
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-    networks:
-      static_network:
-        ipv4_address: 172.28.0.11
-    ports:
-      - '2181:2181'
-
-  kafka:
-    image: bitnami/kafka:latest
-    environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=172.28.0.11:2181
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-    networks:
-      static_network:
-        ipv4_address: 172.28.0.12
-    ports:
-      - '9092:9092'
-    depends_on:
-      - zookeeper
+#  zookeeper:
+#    image: bitnami/zookeeper:latest
+#    environment:
+#      - ALLOW_ANONYMOUS_LOGIN=yes
+#    networks:
+#      static_network:
+#        ipv4_address: 172.28.0.11
+#    ports:
+#      - '2181:2181'
+#
+#  kafka:
+#    image: bitnami/kafka:latest
+#    environment:
+#      - KAFKA_CFG_ZOOKEEPER_CONNECT=172.28.0.11:2181
+#      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+#    networks:
+#      static_network:
+#        ipv4_address: 172.28.0.12
+#    ports:
+#      - '9092:9092'
+#    depends_on:
+#      - zookeeper
 
 
   user_auth:
@@ -51,12 +51,12 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${USER_NAME_DB}
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${USER_AUTH_NAME_DB}
     volumes:
       - ./backend/user-auth-service/src:/app
     networks:
       static_network:
-        ipv4_address: 172.28.0.20
+        ipv4_address: ${USER_AUTH_URL}
     ports:
       - '8001:80'
     depends_on:
@@ -73,7 +73,7 @@ services:
       - ./backend/payment-history-service/src:/app
     networks:
       static_network:
-        ipv4_address: 172.28.0.30
+        ipv4_address: ${PAYMENT_HISTORY_URL}
     ports:
       - '8002:80'
     depends_on:
@@ -90,7 +90,7 @@ services:
       - ./backend/payment-service/src:/app
     networks:
       static_network:
-        ipv4_address: 172.28.0.40
+        ipv4_address: ${PAYMENT_URL}
     ports:
       - '8003:80'
     depends_on:
@@ -107,12 +107,11 @@ services:
       - ./backend/rss-sites-service/src:/app
     networks:
       static_network:
-        ipv4_address: 172.28.0.50
+        ipv4_address: ${RSS_SITES_URL}
     ports:
       - '8004:80'
     depends_on:
       - db
-      - kafka
 
   article_saves:
     build:
@@ -120,64 +119,47 @@ services:
     env_file:
       .env
     environment:
-      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${RSS_SAVES_NAME_DB}
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${ARTICLE_SAVES_NAME_DB}
     volumes:
       - ./backend/article-saves-service/src:/app
     networks:
       static_network:
-        ipv4_address: 172.28.0.60
+        ipv4_address: ${ARTICLE_SAVES_URL}
     ports:
       - '8005:80'
     depends_on:
       - db
 
 
-  rss_generator:
+  rss:
     build:
-      context: ./backend/rss-generator-service
+      context: ./backend/rss-service
     env_file:
       .env
     volumes:
-      - ./backend/rss-generator-service/src:/app
+      - ./backend/rss-service/src:/app
     networks:
       static_network:
-        ipv4_address: 172.28.0.70
+        ipv4_address: ${RSS_URL}
     ports:
       - '8006:80'
     depends_on:
       - db
-      - kafka
 
-  rss_builder:
-    build:
-      context: ./backend/rss-builder-service
-    env_file:
-      .env
-    volumes:
-      - ./backend/rss-builder-service/src:/app
-    networks:
-      static_network:
-        ipv4_address: 172.28.0.80
-    ports:
-      - '8007:80'
-    depends_on:
-      - db
-      - kafka
-
-  admin:
-    build:
-      context: ./backend/admin-service
-    env_file:
-      .env
-    volumes:
-      - ./backend/admin-service/src:/app
-    ports:
-      - '8008:80'
-    networks:
-      static_network:
-        ipv4_address: 172.28.0.90
-    depends_on:
-      - db
+#  admin:
+#    build:
+#      context: ./backend/admin-service
+#    env_file:
+#      .env
+#    volumes:
+#      - ./backend/admin-service/src:/app
+#    ports:
+#      - '8007:80'
+#    networks:
+#      static_network:
+#        ipv4_address: 172.28.0.80
+#    depends_on:
+#      - db
 
 volumes:
   postgres_data:

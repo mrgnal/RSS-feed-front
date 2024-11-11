@@ -10,5 +10,5 @@ urlpatterns = [
     path('article/<uuid:pk>/delete/', ArticleDeleteAPIView.as_view()),
     path('article/add/', AddArticleToCollection.as_view()),
     path('article_collection/articles/', CollectionWithArticles.as_view()),
-    path('article/saved/', ArticlesInCollections.as_view()),
+    path('articles/saved/', ArticlesInCollections.as_view()),
 ]
