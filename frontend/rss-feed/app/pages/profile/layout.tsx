@@ -11,7 +11,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     <div className={styles.flex} >
       <div className={styles.main}>
-        
+        <Navbar variant="minimal"/>
         
         {children}
       </div>

@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './paypalModal.module.css';
 import Image from 'next/image';
+
+import { createPayPalPayment } from '@/app/utils/paymentService';
 
 interface PaymentModalProps {
     isOpen: boolean;
@@ -15,11 +17,26 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     planTitle,
     price
 }) => {
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
     if (!isOpen) return null;
 
-    const handlePayPalClick = () => {
-        // Here you would integrate with PayPal SDK
-        console.log('Processing PayPal payment...');
+    const handlePayPalClick = async () => {
+        try {
+            setIsProcessing(true);
+            setError(null);
+
+            const approvalUrl = await createPayPalPayment(price);
+
+            window.location.href = approvalUrl;
+
+        } catch (error) {
+            console.error('Payment error:', error);
+            setError('Failed to create payment. Please try again.');
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     return (
@@ -49,22 +66,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                     <div className={styles.planPrice}>${price.toFixed(2)}</div>
                 </div>
 
-                <div className={styles.paymentMethods}>
-                    <div className={`${styles.paymentOption} ${styles.active}`}>
-                        <button className={styles.methodButton}>
-                            <span className={styles.methodIcon}>
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="#00457C">
-                                    <path d="M17.5 5h-15C1.67157 5 1 5.67157 1 6.5v7C1 14.3284 1.67157 15 2.5 15h15c.8284 0 1.5-.6716 1.5-1.5v-7c0-.82843-.6716-1.5-1.5-1.5z"/>
-                                </svg>
-                            </span>
-                            PayPal
-                        </button>
-                    </div>
-                </div>
-
                 <button 
                     className={styles.paypalButton}
                     onClick={handlePayPalClick}
+                    disabled={isProcessing}
                 >
                     <img 
                         src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png" 

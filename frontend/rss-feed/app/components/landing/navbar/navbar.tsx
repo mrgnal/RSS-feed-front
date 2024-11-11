@@ -79,7 +79,7 @@ export default function Navbar({ variant = 'full' }: NavbarProps) {
         </div>
 
         {/* Authentication Links or User Info */}
-        {variant === 'full' && (
+        
         <div className={styles.authLinks}>
           {user ? (
             <div className={`flex items-center gap-2 ${styles.hideOnMobile}`}>
@@ -104,7 +104,7 @@ export default function Navbar({ variant = 'full' }: NavbarProps) {
               </Link>
             </>
           )}
-        </div>)}
+        </div>
 
         {/* Mobile Menu Icon */}
         {variant === 'full' && (

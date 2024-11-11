@@ -1,75 +1,81 @@
 .modal {
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 16px;
-    width: 250px;
-    position: absolute;
-    top: 50px;
-    right: 20px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .header {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 16px;
-  }
-  
-  .username {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .email {
-    font-size: 14px;
-    color: #777;
-  }
-  
-  .menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-  }
-  
-  .menuItem {
-    display: flex;
-    align-items: center;
-    padding: 8px 0;
-    font-size: 14px;
-    color: #333;
-    cursor: pointer;
-  }
-  
-  .menuItem i {
-    margin-right: 8px;
-  }
-  
-  .menuItem:hover {
-    color: #007bff;
-  }
-  
-  .logoutButton {
-    background: none;
-    border: none;
-    color: #07B25D;
-    cursor: pointer;
-    font-size: 14px;
-    margin-top: 16px;
-    display: flex;
-    align-items: center;
-  }
-  
-  .logoutButton i {
-    margin-right: 8px;
-  }
-  
-  .logoutButton:hover {
-    color: #04cf69;
-  }
-  
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  width: 250px;
+  position: absolute;
+  top: 50px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.username {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.email {
+  font-size: 14px;
+  color: #777;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  color: #333;
+  text-decoration: none;
+  padding: 8px 0;
+  width: 100%;
+}
+
+.menuLink i {
+  margin-right: 8px;
+}
+
+.menuLink:hover {
+  color: #07B25D;
+}
+
+.logoutButton {
+  background: none;
+  border: none;
+  color: #fa1d1dc3;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.logoutButton i {
+  margin-right: 8px;
+}
+
+.logoutButton:hover {
+  color: #fa1d1dc3;
+}
