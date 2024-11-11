@@ -9,12 +9,15 @@ def parse(url):
 
 def get_source(parsed):
     feed = parsed['feed']
-    updated = feed.get('updated') or feed.get('lastBuildDate') or feed.get('pubDate') or feed.get('date') or feed.get(
-        'modified') or feed.get('lastUpdate')
+    updated = feed.get('updated') or feed.get('lastBuildDate') or  feed.get('pubDate') or feed.get('date') or feed.get('modified') or feed.get('lastUpdate')
 
     if updated:
-        date_obj = datetime.strptime(updated, "%a, %d %b %Y %H:%M:%S GMT")
-        updated_str = date_obj.strftime("%Y-%m-%dT%H:%M:%SZ")  # Перетворення в рядок у потрібному форматі
+        try:
+            date_obj = datetime.strptime(updated, "%a, %d %b %Y %H:%M:%S GMT")
+        except ValueError:
+            date_obj = datetime.strptime(updated, "%a, %d %b %Y %H:%M:%S %z")
+
+        updated_str = date_obj.strftime("%Y-%m-%dT%H:%M:%SZ")
     else:
         updated_str = None
 
