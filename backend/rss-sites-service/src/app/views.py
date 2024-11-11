@@ -38,8 +38,10 @@ class RssChannelAPIView(APIView):
         serializer = RssChannelSerializer(data=data)
         if serializer.is_valid():
                 new_channel = serializer.save()
-                feed_id = create_feed(new_channel.id, data).get('id')
-                response_data = serializer.data + {'feed_id':feed_id}
+                feed_id = create_feed(new_channel.id, data).get('feed_id')
+
+                response_data = serializer.data.copy()
+                response_data.update({'feed_id': feed_id})
                 return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

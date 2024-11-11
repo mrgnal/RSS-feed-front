@@ -7,8 +7,8 @@ load_dotenv()
 
 RSS_URL = os.getenv('RSS_URL')
 
-FEED_URL = RSS_URL + '/api/feed/'
-BUILDER_URL = RSS_URL + '/api/builder/'
+FEED_URL = "http://" + RSS_URL + '/api/feed/'
+BUILDER_URL = "http://" + RSS_URL + '/api/builder/'
 
 def create_feed(channel_id, data):
     if data['type'] == 'generator':
