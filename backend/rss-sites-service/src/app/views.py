@@ -36,10 +36,10 @@ class RssChannelAPIView(APIView):
         if not user_id:
             return Response({'detail': 'User unauthorized.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        max_feed_limit = max_feeds(request)
-        if not max_feed_limit:
-            return Response({'detail': 'Unable to fetch max feeds.'}, status=status.HTTP_400_BAD_REQUEST)
-
+        # max_feed_limit = max_feeds(request)
+        # if not max_feed_limit:
+        #     return Response({'detail': 'Unable to fetch max feeds.'}, status=status.HTTP_400_BAD_REQUEST)
+        #
         # current_feeds_count = RssChannel.objects.filter(user_id=user_id).count()
         # if current_feeds_count >= max_feed_limit:
         #     return Response({'detail': 'Max feeds reached.'}, status=status.HTTP_403_FORBIDDEN)
