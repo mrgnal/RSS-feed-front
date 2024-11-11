@@ -169,23 +169,27 @@ export async function refreshAccessToken() {
 }
 
 export function setRefreshTokenTimeout() {
-  // Отримуємо access-токен з localStorage
   const accessToken = getAccessToken();
-
   if (!accessToken) return;
 
-  // Отримуємо час до закінчення дії токена
-  const tokenPayload = JSON.parse(atob(accessToken.split('.')[1]));
-  const expiresIn = tokenPayload.exp * 1000 - Date.now();
+  try {
+    const tokenParts = accessToken.split('.');
+    if (tokenParts.length !== 3) throw new Error('Invalid access token format.');
 
-  console.log('Access Token Expires In (ms):', expiresIn);
+    const tokenPayload = JSON.parse(atob(tokenParts[1]));
+    const expiresIn = tokenPayload.exp * 1000 - Date.now();
+    console.log('Access Token Expires In (ms):', expiresIn);
 
-  // Оновлюємо токен за хвилину до закінчення його дії
-  const refreshInterval = Math.max(0, expiresIn - 60 * 1000);
+    const refreshInterval = Math.max(0, expiresIn - 60 * 1000);
 
-  setTimeout(async () => {
-    await refreshAccessToken();
-  }, refreshInterval);
+    setTimeout(async () => {
+      await refreshAccessToken();
+    }, refreshInterval);
+
+  } catch (error) {
+    console.error('Failed to parse access token payload:', error);
+    logout(); // Optional: log out if token parsing fails
+  }
 }
 
 export function getAccessToken() {

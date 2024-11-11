@@ -26,7 +26,20 @@ export default function Navbar({ variant = 'full' }: NavbarProps) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Retrieve user data from localStorage on component mount
+    const urlParams = new URLSearchParams(window.location.search);
+    const data = Object.fromEntries(urlParams.entries());
+
+    if (data.access_token && data.refresh_token) {
+
+      console.log("URL data:", data);
+
+      localStorage.setItem('accessToken', data.access_token);
+      localStorage.setItem('refreshToken', data.refresh_token);
+      localStorage.setItem('user', JSON.stringify(data));
+
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData) as User);

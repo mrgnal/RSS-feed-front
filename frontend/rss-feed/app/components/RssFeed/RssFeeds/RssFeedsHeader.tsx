@@ -24,6 +24,7 @@ const RssFeedsHeader = ({children} : {children: React.ReactNode}) => {
   const [user, setUser] = useState<User | null>(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -49,8 +50,9 @@ const RssFeedsHeader = ({children} : {children: React.ReactNode}) => {
     localStorage.removeItem('refreshToken');
     setUser(null);
     setModalOpen(false);
+    router.push('/pages/main'); 
   };
-  const router = useRouter();
+
   return (
     <div className={style.header}>
         {children}

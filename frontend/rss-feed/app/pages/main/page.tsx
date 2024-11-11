@@ -17,7 +17,7 @@ import Footer from '@/app/components/landing/footer/footer';
 
 export default function Home() {
   useEffect(() => {
-    setRefreshTokenTimeout(); 
+    setRefreshTokenTimeout();
   }, []);
 
   return (
