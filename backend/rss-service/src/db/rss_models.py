@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, JSON, ForeignKey
 from sqlalchemy.orm import relationship, sessionmaker
 import uuid
-from database import DATABASE_URL
+from .database import DATABASE_URL
 
 
 engine = create_engine(DATABASE_URL)

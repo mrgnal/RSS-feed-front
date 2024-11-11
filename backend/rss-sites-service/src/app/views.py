@@ -32,14 +32,22 @@ class RssChannelAPIView(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data.copy()
         user_id = request.user.get('id')
+
         if not user_id:
             return Response({'detail': 'User unauthorized.'}, status=status.HTTP_401_UNAUTHORIZED)
-        if len(RssChannel.objects.filter(user_id=user_id)) >= max_feeds(request):
-            return Response({'detail': 'Max feeds.'}, status=status.HTTP_403_FORBIDDEN)
-        if not data['articles']:
-            return Response({'detail': 'No articles.'}, status=status.HTTP_404_NOT_FOUND)
-        data['user_id'] = user_id
 
+        max_feed_limit = max_feeds(request)
+        if not max_feed_limit:
+            return Response({'detail': 'Unable to fetch max feeds.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        current_feeds_count = RssChannel.objects.filter(user_id=user_id).count()
+        if current_feeds_count >= max_feed_limit:
+            return Response({'detail': 'Max feeds reached.'}, status=status.HTTP_403_FORBIDDEN)
+
+        if not data.get('articles'):
+            return Response({'detail': 'No articles provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        data['user_id'] = user_id
         serializer = RssChannelSerializer(data=data)
         if serializer.is_valid():
                 new_channel = serializer.save()

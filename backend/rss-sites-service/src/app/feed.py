@@ -49,7 +49,7 @@ def delete_feed(channel_id):
 def max_feeds(request):
     limit_url = LIMITS_URL
     try:
-        response = requests.get(headers=request.headers,url=limit_url)
+        response = requests.get(headers=request.headers, url=limit_url)
         response.raise_for_status()
         return response.json().get('max_feeds')
     except requests.exceptions.RequestException as e:
