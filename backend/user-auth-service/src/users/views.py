@@ -1,6 +1,8 @@
 import os
 
 import rest_framework_simplejwt
+from django.http import HttpResponseRedirect
+from urllib.parse import urlencode
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -152,7 +154,8 @@ class GoogleAuthCallbackView(APIView):
             result = auth_service.authenticate(data={'token': access_token})
 
             if result['status_code'] == status.HTTP_200_OK:
-                return Response(result['data'])
+                url = f"{os.getenv('HOME_PAGE_URL')}?{urlencode(result['data'])}"
+                return HttpResponseRedirect(url)
             else:
                 return Response(result, status=result['status_code'])
 
