@@ -7,7 +7,7 @@ import os
 load_dotenv()
 
 USER_AUTH_URL = os.getenv('USER_AUTH_URL')
-VERIFY_TOKEN_URL = USER_AUTH_URL + '/api/verify_token/'
+VERIFY_TOKEN_URL ='http://' + USER_AUTH_URL + '/api/verify_token/'
 
 class ExternalAuthServiceAuthentication(BaseAuthentication):
     def authenticate(self, request):
