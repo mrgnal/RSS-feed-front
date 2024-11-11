@@ -1,0 +1,41 @@
+.feed{
+    padding: 20px 0;
+    gap: 20px;
+    border-top: 1px solid black;
+    max-width: 550px;
+    width: 100%;
+}
+
+.title{
+    color: rgb(66, 66, 66);
+    word-break: break-word;
+    font-weight: 600;
+    font-size: 20px;
+    width: fit-content;
+    white-space: normal; 
+}
+
+.info{
+    display: inline-flex;
+    gap: 10px;
+    font-size: 14px;
+    color: rgb(153, 153, 153);
+}
+
+.saveButton{
+    display: inline-flex;
+    gap: 8px;
+    padding: 8px;
+    background-color: white;
+    color: var(--main-color);
+    border:1px solid var(--main-color);
+    border-radius: 20px;
+}
+
+.option{
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+}

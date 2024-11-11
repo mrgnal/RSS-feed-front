@@ -11,6 +11,12 @@
     width: 100%;
 }
 
+.title{
+    font-size: 24px;
+    font-weight: 600;
+    color: rgb(66, 66, 66);;
+}
+
 .searchContainer{
     display: inline-flex;
     flex-direction: row;
@@ -23,6 +29,10 @@
 
 .searchInput{
     width: 100%;
+}
+
+.searchInput:focus{
+    outline: none;
 }
 
 .filterContainer{

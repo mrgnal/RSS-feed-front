@@ -38,3 +38,4 @@ Dockerfile.dev
 
 #Next
 node_modules/
+/test.py

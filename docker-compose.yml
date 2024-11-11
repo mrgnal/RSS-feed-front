@@ -1,0 +1,191 @@
+services:
+#  webapp:
+#    image: nginx:latest
+#    container_name: webapp
+#    networks:
+#      static_network:
+#        ipv4_address: 172.28.0.10
+#    ports:
+#      - "8080:80"  # Exposing the web server to the host machine
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      static_network:
+        ipv4_address: 172.28.0.10
+    ports:
+      - '5432:5432'
+
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      static_network:
+        ipv4_address: 172.28.0.11
+    ports:
+      - '2181:2181'
+
+  kafka:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=172.28.0.11:2181
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    networks:
+      static_network:
+        ipv4_address: 172.28.0.12
+    ports:
+      - '9092:9092'
+    depends_on:
+      - zookeeper
+
+
+  user_auth:
+    build:
+      context: ./backend/user-auth-service
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${USER_NAME_DB}
+    volumes:
+      - ./backend/user-auth-service/src:/app
+    networks:
+      static_network:
+        ipv4_address: 172.28.0.20
+    ports:
+      - '8001:80'
+    depends_on:
+      - db
+
+  payment_history:
+    build:
+      context: ./backend/payment-history-service
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${PAYMENT_HISTORY_NAME_DB}
+    volumes:
+      - ./backend/payment-history-service/src:/app
+    networks:
+      static_network:
+        ipv4_address: 172.28.0.30
+    ports:
+      - '8002:80'
+    depends_on:
+      - db
+
+  payment:
+    build:
+      context: ./backend/payment-service
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${PAYMENT_NAME_DB}
+    volumes:
+      - ./backend/payment-service/src:/app
+    networks:
+      static_network:
+        ipv4_address: 172.28.0.40
+    ports:
+      - '8003:80'
+    depends_on:
+      - db
+
+  rss_sites:
+    build:
+      context: ./backend/rss-sites-service
+    env_file:
+      .env
+    environment:
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${RSS_SITES_NAME_DB}
+    volumes:
+      - ./backend/rss-sites-service/src:/app
+    networks:
+      static_network:
+        ipv4_address: 172.28.0.50
+    ports:
+      - '8004:80'
+    depends_on:
+      - db
+      - kafka
+
+  article_saves:
+    build:
+      context: ./backend/article-saves-service
+    env_file:
+      .env
+    environment:
+      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${RSS_SAVES_NAME_DB}
+    volumes:
+      - ./backend/article-saves-service/src:/app
+    networks:
+      static_network:
+        ipv4_address: 172.28.0.60
+    ports:
+      - '8005:80'
+    depends_on:
+      - db
+
+
+  rss_generator:
+    build:
+      context: ./backend/rss-generator-service
+    env_file:
+      .env
+    volumes:
+      - ./backend/rss-generator-service/src:/app
+    networks:
+      static_network:
+        ipv4_address: 172.28.0.70
+    ports:
+      - '8006:80'
+    depends_on:
+      - db
+      - kafka
+
+  rss_builder:
+    build:
+      context: ./backend/rss-builder-service
+    env_file:
+      .env
+    volumes:
+      - ./backend/rss-builder-service/src:/app
+    networks:
+      static_network:
+        ipv4_address: 172.28.0.80
+    ports:
+      - '8007:80'
+    depends_on:
+      - db
+      - kafka
+
+  admin:
+    build:
+      context: ./backend/admin-service
+    env_file:
+      .env
+    volumes:
+      - ./backend/admin-service/src:/app
+    ports:
+      - '8008:80'
+    networks:
+      static_network:
+        ipv4_address: 172.28.0.90
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
+
+networks:
+  static_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+          gateway: 172.28.0.1

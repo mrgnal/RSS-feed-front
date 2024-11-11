@@ -1,9 +1,16 @@
-import React, { useEffect, useRef } from 'react'
+import React, { MouseEventHandler, useEffect, useRef } from 'react'
 import style from './CollectionEdit.module.css'
+import { createPortal } from 'react-dom';
+import TypeButton from '../../TypeButton';
 
-const CollectionEdit = ({isOpen} : {isOpen: boolean}) => {
+const CollectionEdit = ({isOpen, close} : {isOpen: boolean, close: MouseEventHandler<HTMLButtonElement>}) => {
 
   const dialog = useRef<HTMLDialogElement | null>(null);
+
+  const [isClient, setIsClient] = React.useState<boolean>(false);
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
   useEffect(() => {
     if (dialog.current) {
@@ -15,38 +22,37 @@ const CollectionEdit = ({isOpen} : {isOpen: boolean}) => {
     }
   }, [isOpen]);
 
-  return (
+  if (!isClient) return null;
+
+  return isOpen?createPortal(
     <dialog ref={dialog} className={style.collectionEdit}>
-      <div>
-        <h2>
-          <h5></h5>
-          <button className={style.close}>+</button>
-        </h2>
+      <div  className={style.headContainer}>
+        <h5 className={style.editCollection}>Edit Collection</h5>
+        <button className={style.close} onClick={close}>+</button>
       </div>
       <div>
-        <form id="collectionEdit">
-          <div className={style.exmaple}>
-
-          </div>
-          <div>
+        <form id="collectionEdit" className={style.form}>
+          <div className={style.inputContainer}>
             <span>Collection title</span>
-            <input name='title'/>
+            <input className={style.input} name='title'/>
           </div>
-          <div>
+          <div className={style.inputContainer}>
             <span>Description</span>
-            <input name='description'/>
+            <input className={style.input} name='description'/>
           </div>
-          <div>
+          <div className={style.inputContainer}>
             <span>Icon URL</span>
-            <input name='iconURL'/>
+            <input className={style.input} name='iconURL'/>
           </div>
         </form>
       </div>
-      <div>
-
+      <div className={style.buttonContainer}>
+        <TypeButton image="/check.svg" text="Save" onClick={close} style={style.confirm}/>
+        <TypeButton image="/X.svg" text="Cancel" onClick={close} style={style.decline}/>
       </div>
-    </dialog>
-  )
+    </dialog>,
+    document.getElementById("modal")!
+  ): null
 }
 
 export default CollectionEdit
