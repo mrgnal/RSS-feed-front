@@ -134,3 +134,37 @@ class SubscriptionTypeByIdView(APIView):
     def get(self, request, id):
         print(self.typeService.get_type_by_id(id))
         return Response(SubscriptionTypeSerializer(self.typeService.get_type_by_id(id)).data)
+
+class UserLimitsView(APIView):
+    permission_classes = [IsTokenValid]
+    service = SubscriptionService()
+
+    @swagger_auto_schema(
+        operation_description="Get the current active subscription for a user.",
+        responses={
+            200: openapi.Response(
+                description="Successful retrieval of the current subscription.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'max_feeds': openapi.Schema(type=openapi.TYPE_INTEGER, description='max_feeds'),
+                        'max_rss': openapi.Schema(type=openapi.TYPE_STRING,
+                                                            description='max_rss'),
+                    },
+                )
+            ),
+            404: "No active subscription found.",
+            401: "Unauthorized",
+        },
+    )
+
+    def get(self, request):
+        print(request.user_info)
+        user_info = request.user_info['user_info']
+        user_id = user_info['id']
+        subscription = self.service.get_current_subscription(user_id)
+        if subscription:
+            subscription_type = subscription.subscription_type
+            data = {'max_feeds': subscription_type.max_feeds, 'max_rss': subscription_type.max_rss}
+            return Response(data, status=status.HTTP_200_OK)
+        return Response({"detail": "No active subscription found."}, status=status.HTTP_404_NOT_FOUND)

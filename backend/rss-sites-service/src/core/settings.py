@@ -28,14 +28,14 @@ load_dotenv()
 SECRET_KEY = os.getenv('RSS_SITES_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('RSS_SAVES_DEBUG')
+DEBUG = os.getenv('RSS_SITES_DEBUG')
 
-ALLOWED_HOSTS = ['172.28.0.50', '0.0.0.0', 'localhost']
-
+ALLOWED_HOSTS = [os.getenv('RSS_SITES_URL'), '0.0.0.0', 'localhost']
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,8 +55,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'app.middleware.TokenAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -86,7 +84,11 @@ DATABASES = {
     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':[
+        'app.authentication.ExternalAuthServiceAuthentication',
+    ]
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -122,7 +124,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

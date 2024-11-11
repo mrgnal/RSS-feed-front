@@ -31,12 +31,12 @@ SECRET_KEY = os.getenv('RSS_SAVES_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('RSS_SAVES_DEBUG')
 
-ALLOWED_HOSTS = ['172.28.0.60', '0.0.0.0', 'localhost', '*']
-
+ALLOWED_HOSTS = [os.getenv('ARTICLE_SAVES_URL'), '0.0.0.0', 'localhost', '*']
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

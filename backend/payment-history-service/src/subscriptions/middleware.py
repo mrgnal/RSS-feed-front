@@ -7,12 +7,12 @@ import re
 
 load_dotenv()
 
-AUTH_SERVICE_URL = os.getenv('AUTH_SERVICE_URL')
+AUTH_VERIFY_URL = "http://" + os.getenv('USER_AUTH_URL')
 
 
 def verify_token(token):
     response = requests.post(
-        f"{AUTH_SERVICE_URL}/api/verify_token/",
+        f"{AUTH_VERIFY_URL}/api/verify_token/",
         headers={"Authorization": f"Bearer {token}"},
         json={"token": token}
     )

@@ -2,9 +2,9 @@ from rest_framework import generics, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from uuid import UUID
 from .models import Article, ArticleCollection
 from .serializer import ArticleSerializer, ArticleCollectionSerializer
+from datetime import datetime
 
 class ArticleCollectionListAPIView(generics.ListAPIView):
     serializer_class = ArticleCollectionSerializer
@@ -121,6 +121,13 @@ class AddArticleToCollection(APIView):
         data = request.data.copy()
         serializer = ArticleSerializer(data=data)
 
+        if 'published' in data and isinstance(data['published'], list):
+            try:
+                published_date = datetime(*data['published'][:6])
+                data['published'] = published_date.isoformat()
+            except (ValueError, TypeError) as e:
+                return Response({'published': ['Invalid date format.']}, status=status.HTTP_400_BAD_REQUEST)
+
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
@@ -128,20 +135,22 @@ class AddArticleToCollection(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ArticlesInCollections(APIView):
-    def get(self, request):
-        user_id = request.data['user_id']
-        if not user_id:
+    def get(self, request, *args, **kwargs):
+        if not request.user:
             return Response({'detail': 'User unauthorized.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        collections = ArticleCollection.objects.filter(user_id = user_id)
+        collections = ArticleCollection.objects.filter(user_id=request.user.get('id'))
 
-        articles = []
+        data = []
         for collection in collections:
-            article = Article.objects.filter(collection_id = collection.id)
-            articles.append({
-                'collection_title': collection.title,
-                'collection_id': collection.id,
-                'id': article.site_id,
-                'link':article.link,
-            })
-        return Response(articles, status=status.HTTP_200_OK)
+            for article in Article.objects.filter(collection_id=collection.id):
+                data.append({
+                    'collection_id': collection.id,
+                    'site_id': article.site_id,
+                    'link': article.link,
+                })
+
+        if not data:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(data, status=status.HTTP_200_OK)
