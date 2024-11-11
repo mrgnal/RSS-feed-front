@@ -26,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('RSS_SAVES_KEY')
+SECRET_KEY = os.getenv('ARTICLE_SAVES_URL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('RSS_SAVES_DEBUG')
+DEBUG = os.getenv('ARTICLE_SAVES_URL')
 
 ALLOWED_HOSTS = [os.getenv('ARTICLE_SAVES_URL'), '0.0.0.0', 'localhost', '*']
 
