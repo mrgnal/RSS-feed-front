@@ -186,6 +186,47 @@
     width: 100%;
 }
 
+.menuSearch {
+    position: relative;
+  }
+  
+  .menuSearchInput {
+    /* ваші стилі для input */
+  }
+  
+  .searchResults {
+    position: absolute;
+    top: 100%; /* Відображення результатів нижче поля введення */
+    left: 0;
+    width: 100%;
+    background-color: #007300;
+    border: 1px solid #008600;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+  }
+  
+  .searchResultItem {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .searchResultItem:hover {
+    background-color: #008600;
+  }
+  
+  .resultImage {
+    margin-right: 8px;
+    border-radius: 4px;
+  }
+  
+  .resultTitle {
+    font-size: 14px;
+  }
+
 @media screen and (max-width: 740px){
     .menu{
         transition: height 0.3s ease-in-out;

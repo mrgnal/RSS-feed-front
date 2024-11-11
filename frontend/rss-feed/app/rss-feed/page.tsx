@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import style from './page.module.css'
 import Image from 'next/image'
 import RssType from '../components/RssType'
@@ -7,6 +7,7 @@ import TypeButton from '../components/TypeButton'
 import ReadyOptions from '../components/ReadyOptions'
 import Guide from '../components/RssFeed/RssBuilder/Guide';
 import Builder from '../components/RssFeed/RssBuilder/Builder';
+import { useRouter } from 'next/navigation';
 
 function getWindowSize() {
   const {innerWidth, innerHeight} = window;
@@ -16,6 +17,9 @@ function getWindowSize() {
 const RssFeed = () => {
   const [isGeneratorOrBuilder, setIsGeneratorOrBuider] = useState<boolean>(true); // true - generator; false - builder;
   const [isBuilderOpen, setIsBuilderOpen] = useState<boolean>(false);
+  const [url, setUrl] = useState<string>('');
+  const router = useRouter();
+  const errorRef = useRef<HTMLIFrameElement | null>(null);
 
   const [windowSize, setWindowSize] = useState(getWindowSize());
 
@@ -44,12 +48,27 @@ const RssFeed = () => {
         </div>
         <RssType rssTypeToggle={handleRssTypeToggle}/>
         <div className={style.URL}>
-          <input className={style.input} placeholder={isGeneratorOrBuilder?'Enter URL, Topic or Keyword':'Enter Webpage URL'}/>
+          <input className={style.input} placeholder={isGeneratorOrBuilder?'Enter URL, Topic or Keyword':'Enter Webpage URL'} value={url} onChange={(e) =>{
+            setUrl(e.target.value);
+          }}/>
           <button className={`${style.generateButton} activeButton`} onClick={() => {
+            if(errorRef){
+              errorRef.current?.classList.remove(style.errorShow);
+            }
             if(!isGeneratorOrBuilder){
               setIsBuilderOpen(true);
             }
+            else{
+              if(true){
+                errorRef.current?.classList.add(style.errorShow);
+                return;
+              }
+              router.push('/my-feeds');
+            }
           }}>{isGeneratorOrBuilder?'Generate':'Load Website'}</button>
+        </div>
+        <div ref={errorRef} className={`${style.error}`}>
+          <p>123</p>
         </div>
       </div>
       {
@@ -63,7 +82,7 @@ const RssFeed = () => {
       { 
         !isGeneratorOrBuilder && 
         <>
-          <Builder isOpen={isBuilderOpen} close={() => {setIsBuilderOpen(false); console.log(isBuilderOpen)}}/>
+          <Builder isOpen={isBuilderOpen} close={() => {setIsBuilderOpen(false); console.log(isBuilderOpen)}} url={url}/>
           <div className={style.builderContent}>
             <h2 className={style.builderContentTitle}>How RSS Builder Works</h2>
             <div className={style.guideContainer}>

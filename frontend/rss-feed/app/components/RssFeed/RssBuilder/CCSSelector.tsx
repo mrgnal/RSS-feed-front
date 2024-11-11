@@ -1,17 +1,17 @@
-import React from 'react'
-import TypeButton from '../../TypeButton'
-import style from './CCSSelector.module.css'
+import React from 'react';
+import TypeButton from '../../TypeButton';
+import style from './CCSSelector.module.css';
 
-const CCSSelector = ({ccs, title}: {ccs: string, title: string}) => {
+const CCSSelector = ({ ccs, title, onSelect, className }: { ccs: string, title: string, onSelect: () => void, className: string }) => {
   return (
     <div className={style.ccsContainer}>
       <label className={style.ccsTitle}>{title}</label>
       <div className={style.ccsSelect}>
-        <input value={ccs} className={style.ccsInput} readOnly={true}/>
-        <TypeButton image='/selector.svg' text='' onClick={() => {}} style={style.button}/>
+        <input value={ccs} className={`${style.ccsInput} ${className}`}/>
+        <TypeButton image='/selector.svg' text='' onClick={onSelect} style={style.button} />
       </div>
     </div>
-  )
+  );
 }
 
-export default CCSSelector
+export default CCSSelector;

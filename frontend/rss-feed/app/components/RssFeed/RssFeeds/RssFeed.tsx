@@ -6,7 +6,7 @@ import FeedEdit from './FeedEdit'
 import ConfirmDelete from '../../ConfirmDelete'
 import { useRouter } from 'next/navigation'
 
-const RssFeed = ({title, url, image}: {title: string, url: string, image: string}) => {
+const RssFeed = ({title, url, image, checked}: {title: string, url: string, image: string, checked: boolean}) => {
   const router = useRouter();
   const [isEditOpen, setEditOpen] = useState<boolean>(false);
   const [isDeleteOpen, setDeleteOpen] = useState<boolean>(false);
@@ -31,7 +31,7 @@ const RssFeed = ({title, url, image}: {title: string, url: string, image: string
 				<div className={style.feedTitleContainer}>
 					<h2 className={style.feedTitle}>{title}</h2>
 					{
-						true &&
+						checked == true &&
 						<div className={style.point}/>
 					}
 				</div>

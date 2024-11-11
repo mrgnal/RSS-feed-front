@@ -51,6 +51,7 @@
     display: inline-flex;
     flex-direction: column;
     gap: 16px;
+    padding-bottom: 10px;
 }
 
 .builderSettings{
@@ -79,6 +80,12 @@
     justify-content: center;
 }
 
+.selected {
+    border: 2px solid var(--main-color) !important;
+    padding: 2px;
+    border-radius: 4px;
+}  
+
 @media screen and (max-width: 620px) {
     .builder{
         flex-direction: column;
@@ -92,7 +99,6 @@
         width: 100%;
         max-height: 150px;
         overflow-y: scroll;
-        padding-bottom: 10px;
     }
 
     .site{

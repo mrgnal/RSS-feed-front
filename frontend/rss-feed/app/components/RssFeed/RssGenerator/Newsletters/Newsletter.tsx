@@ -9,7 +9,7 @@ const Newsletter = ({title, text, icon, categories} : {title: string, text: stri
       <div className={style.contentContainer}>
         <div className={style.titleContainer}>
           <h3 className={style.title}>{title}</h3>
-          <Image src={icon} alt="Icon" width={27} height={27}/>
+          <Image src={icon} alt="" width={27} height={27}/>
         </div>
         <div className={style.textContainer}>
           <p className={style.text}>{text}</p>

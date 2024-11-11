@@ -92,6 +92,7 @@
     display: inline-flex;
     flex-wrap: wrap;
     gap: 20px;
+    overflow-y: scroll;
 }
 
 .createFeed{

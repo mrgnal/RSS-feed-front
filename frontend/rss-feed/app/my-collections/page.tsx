@@ -13,9 +13,49 @@ function getWindowSize() {
 }
 
 const Collections = () => {
+  const collections = [
+    {
+      title: "Test collection"
+    },
+    {
+      title: "Test collection 2"
+    },
+    {
+      title: "Test collection 3"
+    },
+    {
+      title: "Test collection 4"
+    },
+    {
+      title: "Test collection 5"
+    },
+    {
+      title: "Test collection 6"
+    },
+    {
+      title: "Test collection 7"
+    },
+    {
+      title: "Test collection 8"
+    },
+    {
+      title: "Test collection 9"
+    },
+    {
+      title: "Test collection 10"
+    },
+    {
+      title: "Test collection 11"
+    },
+  ];
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
 
   const [windowSize, setWindowSize] = useState(getWindowSize());
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredCollections = collections.filter((collection) =>
+    collection.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     function handleWindowResize() {
@@ -43,21 +83,18 @@ const Collections = () => {
             <div className={style.filterContainerLeft}>
               <div className={style.searchContainer}>
                 <Image src="/Search.svg" alt='Search' width={20} height={20}/>
-                <input placeholder='Filter Collections...' className={style.searchInput}/>
+                <input placeholder='Filter Collections...' className={style.searchInput} onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                }}/>
               </div>
             </div>
           </div>
           <div className={style.contentContainer}>
-            <Collection title='Test collection'/>
-            <Collection title='Test collection'/>
-            <Collection title='Test collection'/>
-            <Collection title='Test collection'/>
-            <Collection title='Test collection'/>
-            <Collection title='Test collection'/>
-            <Collection title='Test collection'/>
-            <Collection title='Test collection'/>
-            <Collection title='Test collection'/>
-            <Collection title='Test collection'/>
+            {
+              filteredCollections.map((v ,i) =>{
+                return <Collection key={i} title={v.title}/>
+              })
+            }
           </div>
         </div>
         {

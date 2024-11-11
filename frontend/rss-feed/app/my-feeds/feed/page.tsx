@@ -23,14 +23,71 @@ function getColumnsCount(width: number){
 
 const Feed = () => {
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
-  const testFeed = {
-    title: "Rss news title test for example",
-    image: '/second-step.webp',
-    text: 'The tropical cyclone, which hit the island of Luzon, prompted evacuation orders for more than 160,000 residents. Early Friday, officials warned that “life-threatening conditions persist.”',
-    source: 'nytime.com',
-    date: '53 m',
+  const testFeeds = [
+    {
+      title: "Severe Thunderstorm Warning Issued for Northeast",
+      image: '/second-step.webp',
+      text: 'A severe thunderstorm warning has been issued for the northeastern states, with heavy rains expected.',
+      source: 'weather.com',
+      date: '2024-10-11T10:30:00Z',
+    },
+    {
+      title: "Tech Giants Join Forces for Green Energy Initiative",
+      image: '/second-step.webp',
+      text: 'Leading technology companies are committing to reducing their carbon footprint by switching to renewable energy sources.',
+      source: 'techcrunch.com',
+      date: '2024-11-10T12:00:00Z',
+    },
+    {
+      title: "New Smartphone Launches with Groundbreaking Features",
+      image: '/second-step.webp',
+      text: 'A major smartphone manufacturer has unveiled its latest model, boasting a revolutionary camera and fast-charging capabilities.',
+      source: 'gadgetreview.com',
+      date: '2024-11-09T14:00:00Z',
+    },
+    {
+      title: "Severe Thunderstorm Warning Issued for Northeast",
+      image: '/second-step.webp',
+      text: 'A severe thunderstorm warning has been issued for the northeastern states, with heavy rains expected.',
+      source: 'weather.com',
+      date: '2024-10-11T10:30:00Z',
+    },
+    {
+      title: "Tech Giants Join Forces for Green Energy Initiative",
+      image: '/second-step.webp',
+      text: 'Leading technology companies are committing to reducing their carbon footprint by switching to renewable energy sources.',
+      source: 'techcrunch.com',
+      date: '2024-11-10T12:00:00Z',
+    },
+    {
+      title: "New Smartphone Launches with Groundbreaking Features",
+      image: '/second-step.webp',
+      text: 'A major smartphone manufacturer has unveiled its latest model, boasting a revolutionary camera and fast-charging capabilities.',
+      source: 'gadgetreview.com',
+      date: '2024-11-09T14:00:00Z',
+    },
+  ];
+  
+  const formatDateDifference = (dateStr: string) => {
+    const date = new Date(dateStr).getTime(); // Перетворюємо рядок у об'єкт Date
+    const now = new Date().getTime();
+    const diffInSeconds = Math.floor((now - date) / 1000); // Різниця в секундах
+  
+    const minutes = Math.floor(diffInSeconds / 60);
+    const hours = Math.floor(diffInSeconds / 3600);
+    const days = Math.floor(diffInSeconds / (3600 * 24));
+  
+    if (minutes < 60) {
+      return `${minutes} m`;
+    } else if (hours < 24) {
+      return `${hours} h`;
+    } else {
+      return `${days} d`;
+    }
   };
   const router = useRouter();
+  const [sortOption, setSortOption] = useState("auto");
+  const [typeOption, setTypeOption] = useState("xml");
   
   const [selectedView, setSelectedView] = useState<string>("list");
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
@@ -51,18 +108,29 @@ const Feed = () => {
     };
   }, []);
 
-  var feeds = Array.from({ length: 25 }, (_, i) => (
-      <ListFeed key={i} title={testFeed.title + " " + i}
-      image={testFeed.image}
-      text={testFeed.text}
-      source={testFeed.source}
-      date={testFeed.date}
-      feedStyle={style.gridFeed}/>
-  ));
+  const [buttonCopyText, setButtonCopyText] = useState("Copy");
+
+  const sortedFeeds = [...testFeeds].sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+
+    switch (sortOption) {
+      case "random":
+        return Math.random() - 0.5;
+      default:
+        return dateB - dateA;
+    }
+  });
 
   const columnFeeds = Array.from({ length: columns }, (_, i) =>
-    feeds.filter((_, index) => index % columns === i)
+    sortedFeeds.filter((_, index) => index % columns === i)
   );
+
+  const url = {
+    xml:"https://test.com/feeds/asdasdqw.xml",
+    csv:"https://test.csv/asdqqqww.csv",
+    json:"https://qqq.com/feeds/asdasdqw.json" 
+  }
 
   return (
     <>
@@ -93,14 +161,26 @@ const Feed = () => {
                 <div className={style.feedExportAndSettings}>
                   <div className={style.feedExport}>
                     <div className={style.export}>
-                      <input readOnly={true} className={style.exportURL} value="https://test.com/feeds/asdasdqw"/>
-                      <select className={style.exportType}>
-                        <option>XML</option>
-                        <option>CSV</option>
-                        <option>JSON</option>
+                      <input readOnly={true} className={style.exportURL} value={typeOption == "xml" ? url.xml : typeOption == "csv" ? url.csv : url.json}/>
+                      <select className={style.exportType} defaultValue="xml" onChange={(e) =>{
+                        setTypeOption(e.target.value);
+                      }}>
+                        <option value="xml">XML</option>
+                        <option value="csv">CSV</option>
+                        <option value="json">JSON</option>
                       </select>
                     </div>
-                    <TypeButton image="/Copy-1.svg" text="Copy" onClick={()=>{}} style={style.button}/>
+                    <TypeButton image="/Copy-1.svg" text={buttonCopyText} onClick={() => {
+                      const exportURL = typeOption === "xml" ? url.xml : typeOption === "csv" ? url.csv : url.json;
+                      navigator.clipboard.writeText(exportURL)
+                        .then(() => {
+                          setButtonCopyText("Copied");
+                          setTimeout(() => setButtonCopyText("Copy"), 2000);
+                        })
+                        .catch((err) => {
+                          console.error("Помилка копіювання: ", err);
+                        });
+                    }} style={style.button} />
                   </div>
                   {
                     selectedView == "list" && windowSize.innerWidth < 1000 &&
@@ -112,10 +192,12 @@ const Feed = () => {
                 <div className={style.feedView}>
                   <div>
                     <span>Sort by: </span>
-                    <select className={style.select}>
-                      <option>Auto</option>
-                      <option>Date</option>
-                      <option>Random</option>
+                    <select className={style.select} onChange={(e) =>{
+                      setSortOption(e.target.value);
+                    }}>
+                      <option value='auto'>Auto</option>
+                      <option value='date'>Date</option>
+                      <option value='random'>Random</option>
                     </select>
                   </div>
                   <select value={selectedView} onChange={(e) => {
@@ -135,10 +217,15 @@ const Feed = () => {
               {
                 selectedView=="list" && 
                 <>
-                  <ListFeed title="Rss news title test for example" image='/second-step.webp' text='The tropical cyclone, which hit the island of Luzon, prompted evacuation orders for more than 160,000 residents. Early Friday, officials warned that “life-threatening conditions persist.”' source='nytime.com' date='53 m'/>
-                  <ListFeed title="Rss news title test for example" image='/second-step.webp' text='The tropical cyclone, which hit the island of Luzon, prompted evacuation orders for more than 160,000 residents. Early Friday, officials warned that “life-threatening conditions persist.”' source='nytime.com' date='53 m'/>
-                  <ListFeed title="Rss news title test for example" image='/second-step.webp' text='The tropical cyclone, which hit the island of Luzon, prompted evacuation orders for more than 160,000 residents. Early Friday, officials warned that “life-threatening conditions persist.”' source='nytime.com' date='53 m'/>
-                  <ListFeed title="Rss news title test for example" image='/second-step.webp' text='The tropical cyclone, which hit the island of Luzon, prompted evacuation orders for more than 160,000 residents. Early Friday, officials warned that “life-threatening conditions persist.”' source='nytime.com' date='53 m'/>
+                  {
+                    sortedFeeds.map((v, i) =>{
+                      return <ListFeed key={i} title={v.title + " " + i}
+                      image={v.image}
+                      text={v.text}
+                      source={v.source}
+                      date={formatDateDifference(v.date)}/>
+                    })
+                  }
                 </>
               }
               {
@@ -147,8 +234,14 @@ const Feed = () => {
                   {
                     columnFeeds.map((v, i) => {
                       return <div key={i} className={style.gridColumn} style={{width: 100/columns+'%'}}>
-                        {v.map((v, i) =>{
-                          return v;
+                        {
+                          v.map((v, i) =>{
+                            return <ListFeed key={i} title={v.title + " " + i}
+                            image={v.image}
+                            text={v.text}
+                            source={v.source}
+                            date={formatDateDifference(v.date)}
+                            feedStyle={style.gridFeed}/>
                         })}
                       </div>
                     })

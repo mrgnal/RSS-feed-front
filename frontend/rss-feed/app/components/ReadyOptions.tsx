@@ -29,14 +29,7 @@ const ReadyOptions = () => {
     { title: "CNN", image: "/cnn.svg", url: "http://rss.cnn.com/rss/cnn_topstories.rss" },
     { title: "Reuters", image: "/reuters.svg", url: "http://feeds.reuters.com/reuters/topNews" },
     { title: "The Guardian", image: "/guardian.svg", url: "https://www.theguardian.com/world/rss" },
-    { title: "Al Jazeera", image: "/aljazeera.svg", url: "http://www.aljazeera.com/xml/rss/all.xml" },
-    { title: "Washington Post", image: "/washingtonpost.svg", url: "http://feeds.washingtonpost.com/rss/politics" },
-    { title: "Bloomberg", image: "/bloomberg.svg", url: "https://www.bloomberg.com/feed" },
     { title: "Forbes", image: "/forbes.svg", url: "https://www.forbes.com/investing/feed2/" },
-    { title: "TechCrunch", image: "/techcrunch.svg", url: "http://feeds.feedburner.com/TechCrunch/" },
-    { title: "Wired", image: "/wired.svg", url: "https://www.wired.com/feed/rss" },
-    { title: "HuffPost", image: "/huffpost.svg", url: "https://www.huffpost.com/section/front-page/feed" },
-    { title: "Engadget", image: "/engadget.svg", url: "https://www.engadget.com/rss.xml" },
   ];
 
   const topics = [
@@ -134,7 +127,7 @@ const ReadyOptions = () => {
       title: "Hey, it's Z",
       text: "These are the random thoughts we have all had, yet I am the only one speaking them out loud. Want to know why the cars movie...",
       categories: ["Newsletters", "Creativity", "Memes"],
-      icon: "/file.svg",
+      icon: "/hey.svg",
     },
     {
       title: "Tech Weekly",

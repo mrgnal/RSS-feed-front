@@ -190,3 +190,18 @@
     bottom: 93px;
     scale: 0.65;
 }
+
+.error{
+    width: 100%;
+    border: 1px solid red;
+    background-color: lightcoral;
+    color: white;
+    visibility: collapse;
+    max-width: 680px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.errorShow{
+    visibility: visible;
+}

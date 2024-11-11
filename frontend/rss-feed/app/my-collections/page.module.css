@@ -31,6 +31,10 @@
     width: 100%;
 }
 
+.searchInput:focus{
+    outline: none;
+}
+
 .filterContainer{
     display: inline-flex;
     align-items: center;
