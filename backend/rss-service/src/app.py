@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, HTTPException, Depends
-from fastapi.openapi.models import Response
+from fastapi import Response
 from starlette.responses import HTMLResponse
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,9 +32,10 @@ async def get_from_rss(url: str, request: Request):
     except HTTPException as http_exc:
         return JSONResponse({'detail': str(http_exc.detail)}, status_code=http_exc.status_code)
 
-    source['link'] = url if str(source['link']) != str(url) else source['link']
-    token = request.headers.get('accessToken')
+    source['url'] = url if str(source['url']) != str(url) else source['url']
+    token = request.headers.get('Authorization')
     if token:
+        token = token.split(' ')[1]
         response = await get_saved_articles(token)
         if response.status_code == 200:
             articles = await mark_articles(articles, response.json())
@@ -48,10 +49,11 @@ def get_source_page(url: str):
         return JSONResponse({'detail': str(http_exc.detail)}, status_code=http_exc.status_code)
 @app.get('/api/feed/')
 async def get_feed(channel_id: str, request:Request, db: Session = Depends(get_db)):
-    feed = db.query(RSSFeed).filter(RSSFeed.channel_id == channel_id)
+    feed = db.query(RSSFeed).filter(RSSFeed.channel_id == channel_id).first()
 
-    token = request.headers.get('accessToken')
+    token = request.headers.get('Authorization')
     if token:
+        token = token.split(' ')[1]
         response = await get_saved_articles(token)
         if response.status_code == 200:
             feed.articles = await mark_articles(feed.articles, response.json())
@@ -70,14 +72,13 @@ async def create_feed(request : Request, db : Session = Depends(get_db)):
         channel_id = channel_id,
         articles = articles
     )
-
     db.add(feed)
     db.commit()
     db.refresh(feed)
 
     return JSONResponse({'feed_id': feed.uuid, 'channel_id': feed.channel_id}, status_code=200)
 @app.delete('/api/feed/')
-async def delete_feed(channel_id: str, db: Session = Depends(get_db)):
+def delete_feed(channel_id: str, db: Session = Depends(get_db)):
     feed = db.query(RSSFeed).filter(RSSFeed.channel_id == channel_id).first()
     if not feed:
         raise HTTPException(status_code=404, detail="Feed not found.")

@@ -9,13 +9,20 @@ def parse(url):
 
 def get_source(parsed):
     feed = parsed['feed']
+    updated = feed.get('updated') or feed.get('lastBuildDate') or feed.get('pubDate') or feed.get('date') or feed.get(
+        'modified') or feed.get('lastUpdate')
+
+    if updated:
+        date_obj = datetime.strptime(updated, "%a, %d %b %Y %H:%M:%S GMT")
+        updated_str = date_obj.strftime("%Y-%m-%dT%H:%M:%SZ")  # Перетворення в рядок у потрібному форматі
+    else:
+        updated_str = None
 
     return {
-        'link': feed.get('link') or feed.get('url') or feed.get('feed_url') or feed.get('feed_link'),
+        'url': feed.get('link') or feed.get('url') or feed.get('feed_url') or feed.get('feed_link'),
         'title': feed.get('title') or None,
         'subtitle': feed.get('subtitle') or None,
-        'updated': feed.get('updated') or feed.get('lastBuildDate') or feed.get('pubDate') or feed.get('date') or feed.get(
-        'modified') or feed.get('lastUpdate'),
+        'updated': updated_str,
         'image_url': feed.get('image', {}).get('href') or feed.get('icon') or None,
     }
 
@@ -30,11 +37,10 @@ def get_articles(parsed):
         elif 'media_thumbnail' in entry:
             image = entry.media_thumbnail[0].get('url')
 
-        # Parse the published date
         published = entry.get('published_parsed') or None
         if published:
             published_datetime = datetime(*published[:6])
-            published_str = published_datetime.isoformat()  # Convert to ISO string format
+            published_str = published_datetime.isoformat()
         else:
             published_str = None
 

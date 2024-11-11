@@ -1,3 +1,4 @@
+import datetime
 import uuid
 from django.db import models
 
@@ -5,7 +6,11 @@ class RssChannel(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     user_id = models.UUIDField()
 
-    source = models.JSONField()
+    url = models.URLField(null=False)
+    title = models.CharField(max_length=256, default='Untitled')
+    updated = models.DateTimeField(default=datetime.datetime.now)
+    subtitle = models.TextField(null=True)
+    image_url = models.URLField(null=True)
 
     status = models.BooleanField(default=True)
 
