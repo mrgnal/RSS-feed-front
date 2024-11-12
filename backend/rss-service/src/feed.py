@@ -1,8 +1,8 @@
 from datetime import datetime
-
 import feedparser
 from urllib.parse import urlparse
 import requests
+from bs4 import BeautifulSoup
 
 def parse(url):
     return feedparser.parse(url)
@@ -47,12 +47,13 @@ def get_articles(parsed):
         else:
             published_str = None
 
+        summary = clean_summary(entry.get('summary'))
         articles.append({
             'site_id': entry.get('id'),
             'link': entry.get('link') or entry.get('url') or None,
             'title': entry.get('title') or None,
             'image': image,
-            'summary': entry.get('summary'),
+            'summary': summary,
             'published': published_str,
             'author': entry.get('author') or None,
             'collection_id': '',
@@ -75,3 +76,10 @@ def delete_field(field, json_data):
     for item in json_data:
         if f"{field}" in item:
             del item[f"{field}"]
+
+def clean_summary(summary):
+    if '<' in summary and '>' in summary:
+        soup = BeautifulSoup(summary, 'html.parser')
+        return soup.get_text()
+    else:
+        return summary
