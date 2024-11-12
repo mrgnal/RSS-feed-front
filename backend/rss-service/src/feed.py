@@ -70,3 +70,8 @@ def check_url(url):
         return url
 
     return None
+
+def delete_field(field, json_data):
+    for item in json_data:
+        if f"{field}" in item:
+            del item[f"{field}"]

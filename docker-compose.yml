@@ -112,6 +112,7 @@ services:
       - '8004:80'
     depends_on:
       - db
+      - kafka
 
   article_saves:
     build:
@@ -129,8 +130,6 @@ services:
       - '8005:80'
     depends_on:
       - db
-      - kafka
-
 
   rss:
     build:
