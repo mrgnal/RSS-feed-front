@@ -43,7 +43,15 @@ async def get_from_rss(url: str, request: Request):
         response = await get_saved_articles(token)
         if response.status_code == 200:
             articles = await mark_articles(articles, response.json())
-    return JSONResponse({'source': source,'articles': articles}, status_code=200)
+    return JSONResponse({
+                        'url': source.get('url'),
+                        'title': source.get('title'),
+                        'subtitle': source.get('subtitle'),
+                        'updated': source.get('updated'),
+                        'image_url': source.get('image_url'),
+                        'type': 'generator',
+                        'articles': articles}, status_code=200)
+
 @app.get('/api/fetch_page/')
 def get_source_page(url: str):
     try:
