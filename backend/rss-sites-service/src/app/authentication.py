@@ -14,7 +14,7 @@ class ExternalAuthServiceAuthentication(BaseAuthentication):
 
         token = request.headers.get('Authorization')
         if not token:
-            raise AuthenticationFailed(f'Authorization token is missing {dict(request.headers)}')
+            raise AuthenticationFailed(f'Authorization token is missing')
         token = token.split(' ')[1]
         user_info = self.verify_token(token)
 
