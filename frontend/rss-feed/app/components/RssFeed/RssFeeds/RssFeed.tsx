@@ -13,7 +13,7 @@ const RssFeed = ({title, url, image, checked}: {title: string, url: string, imag
 
   return (
 	<div className={style.feed} onClick={(e) => {
-		router.push('/my-feeds/feed');
+		router.push('/my-feeds/feed?url='+url);
 	}}>
 		<div className={style.panel}>
 			<TypeButton image="/edit.svg" text="" onClick={(e)=>{     
@@ -26,7 +26,7 @@ const RssFeed = ({title, url, image, checked}: {title: string, url: string, imag
       }} style=""/>
 		</div>
 		<div className={style.feedInfo}>
-			<Image src={image} alt="" width={48} height={48} className={style.image}/>
+			<Image src={image} alt="" unoptimized width={48} height={48} className={style.image}/>
 			<div className={style.feedText}>
 				<div className={style.feedTitleContainer}>
 					<h2 className={style.feedTitle}>{title}</h2>

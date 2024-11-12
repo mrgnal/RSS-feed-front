@@ -6,7 +6,7 @@ import ListFeed from '@/app/components/RssFeed/RssFeeds/Feeds/ListFeed'
 import RssFeedsHeader from '@/app/components/RssFeed/RssFeeds/RssFeedsHeader'
 import RssFeedsMenu from '@/app/components/RssFeed/RssFeeds/RssFeedsMenu'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import RssFeedMenuMobile from '@/app/components/RssFeed/RssFeeds/RssFeedMenuMobile'
 
 function getWindowSize() {
@@ -21,7 +21,42 @@ function getColumnsCount(width: number){
   else return 1;
 }
 
+interface news{
+  author: string
+  collection_id: number
+  image: string
+  link: string
+  published: string
+  site_id: string
+  summary: string
+  title: string
+}
+
 const Feed = () => {
+  const [isForSave, setIsForSave] = useState<boolean>(false);
+  const [feedUrl, setFeedUrl] = useState<string | null>('');
+
+  const router = useRouter();
+
+  // Use useEffect to ensure it's only run on the client-side
+  const searchParams = useSearchParams();  // Hook from next/navigation
+
+  useEffect(() => {
+    const forSave = searchParams.get('forSave');
+    const feed = searchParams.get('url');
+    setIsForSave(forSave === 'true');
+    setFeedUrl(feed);
+    console.log(isForSave);
+  }, [searchParams]); 
+  
+  const rssUrl = process.env.NEXT_PUBLIC_RSS;
+  const rssSitesUrl = process.env.NEXT_PUBLIC_RSS_SITES_URL;
+  const [news, setNews] = useState<news[]>([]);
+  fetch(rssUrl+"/api/check_channel/?url="+feedUrl).then(
+    response => {
+      response.json().then(data => {setNews(data.articles); console.log("AAAA " + data.articles)})
+  });
+
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
   const testFeeds = [
     {
@@ -85,7 +120,6 @@ const Feed = () => {
       return `${days} d`;
     }
   };
-  const router = useRouter();
   const [sortOption, setSortOption] = useState("auto");
   const [typeOption, setTypeOption] = useState("xml");
   
@@ -110,9 +144,9 @@ const Feed = () => {
 
   const [buttonCopyText, setButtonCopyText] = useState("Copy");
 
-  const sortedFeeds = [...testFeeds].sort((a, b) => {
-    const dateA = new Date(a.date).getTime();
-    const dateB = new Date(b.date).getTime();
+  const sortedFeeds = [...news].sort((a, b) => {
+    const dateA = new Date(a.published).getTime();
+    const dateB = new Date(b.published).getTime();
 
     switch (sortOption) {
       case "random":
@@ -130,7 +164,7 @@ const Feed = () => {
     xml:"https://test.com/feeds/asdasdqw.xml",
     csv:"https://test.csv/asdqqqww.csv",
     json:"https://qqq.com/feeds/asdasdqw.json" 
-  }
+  }  
 
   return (
     <>
@@ -221,9 +255,9 @@ const Feed = () => {
                     sortedFeeds.map((v, i) =>{
                       return <ListFeed key={i} title={v.title + " " + i}
                       image={v.image}
-                      text={v.text}
-                      source={v.source}
-                      date={formatDateDifference(v.date)}/>
+                      text={v.summary}
+                      source={v.author}
+                      date={formatDateDifference(v.published)}/>
                     })
                   }
                 </>
@@ -238,9 +272,9 @@ const Feed = () => {
                           v.map((v, i) =>{
                             return <ListFeed key={i} title={v.title + " " + i}
                             image={v.image}
-                            text={v.text}
-                            source={v.source}
-                            date={formatDateDifference(v.date)}
+                            text={v.summary}
+                            source={v.author}
+                            date={formatDateDifference(v.published)}
                             feedStyle={style.gridFeed}/>
                         })}
                       </div>
@@ -258,7 +292,36 @@ const Feed = () => {
                   <Image src="/back.svg" alt='back' width={20} height={20}/>
                   </button>
               }
-              <TypeButton image="/Power.svg" text="Off" onClick={() => {}} style={style.button} width={16} height={16}/>
+              <TypeButton image="/Power.svg" text="Off" onClick={() => {
+                fetch(rssSitesUrl+"/api/channel/"); //dorobiti
+              }} style={style.button} width={16} height={16}/>
+              {
+                isForSave && 
+                <TypeButton image="/Save.svg" text="Save chanel" onClick={() => {
+                  const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMxMzkxNDUyLCJpYXQiOjE3MzEzNzM0NTIsImp0aSI6IjYyNjRmNWJkNWVlOTQ0YmZhNzI0MzI3ZmRhMzliMzJkIiwidXNlcl9pZCI6IjI3ZjhjMjc2LWRiYTYtNDFjMi1iNDEyLWNlNmNhMTc1NjIwZCJ9.xuBP-qWtkcZWXqDFktQBvklw2GWYNKuNBWTW3R_f9IU"//localStorage.getItem('accessToken');
+                  fetch(rssUrl+"/api/check_channel/?url="+feedUrl).then(
+                    response => {
+                      response.json().then(data => {
+                        console.log(data);
+                        fetch(rssSitesUrl + "/api/channel/create", {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${accessToken}`
+                          },
+                          body: JSON.stringify(data)
+                        }).catch(error=>{
+                          console.log(error);
+                        });
+                      }).catch(error => {
+                        console.error('Error parsing JSON:', error);
+                      });
+                    }
+                  ).then(()=>{
+                    router.push('/my-feeds');
+                  })
+                }} style={style.button} width={16} height={16}/>
+              }
             </div>
           </div>
         </div>

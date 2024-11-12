@@ -7,7 +7,7 @@ const ListFeed = ({title, image, text, source, date, feedStyle} : {title: string
   return (
     <div className={feedStyle!=null?feedStyle:style.feed}>
       <h3 className={style.title}>{title}</h3>
-      <Image src={image} alt="" width={550} height={550}/>
+      <Image src={image} unoptimized alt="" width={550} height={550}/>
       <p className={style.text}>{text}</p>
       <div className={style.option}>
         <div className={style.info}>

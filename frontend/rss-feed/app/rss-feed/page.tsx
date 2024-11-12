@@ -20,7 +20,6 @@ const RssFeed = () => {
   const [url, setUrl] = useState<string>('');
   const router = useRouter();
   const errorRef = useRef<HTMLIFrameElement | null>(null);
-
   const [windowSize, setWindowSize] = useState(getWindowSize());
 
   useEffect(() => {
@@ -38,6 +37,9 @@ const RssFeed = () => {
   const handleRssTypeToggle = (rssType: boolean) => {
     setIsGeneratorOrBuider(rssType);
   }
+
+  const rssUrl = process.env.NEXT_PUBLIC_RSS;
+  console.log("rss url: "+rssUrl);
 
   return (
     <>
@@ -59,11 +61,14 @@ const RssFeed = () => {
               setIsBuilderOpen(true);
             }
             else{
-              if(true){
-                errorRef.current?.classList.add(style.errorShow);
-                return;
-              }
-              router.push('/my-feeds');
+              const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMxMzc3ODQxLCJpYXQiOjE3MzEzNTk4NDEsImp0aSI6ImM4NmUzOWQ4YWZmYzQyNGJiNjBmYThiOGEyNzZlNTllIiwidXNlcl9pZCI6IjI3ZjhjMjc2LWRiYTYtNDFjMi1iNDEyLWNlNmNhMTc1NjIwZCJ9.maBlYyLdQ8g6EG4vxDFzwEKsc1mMcbRH8s1fIDzCNmc"//localStorage.getItem('accessToken');
+              fetch(rssUrl+"/api/check_channel/?url="+url).then(
+                response => {
+                  console.log(response);
+                }
+              ).then(()=>{
+                router.push('/my-feeds/feed?forSave=true&url='+url);
+              })
             }
           }}>{isGeneratorOrBuilder?'Generate':'Load Website'}</button>
         </div>
