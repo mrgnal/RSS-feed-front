@@ -34,7 +34,7 @@ services:
   kafka:
     image: bitnami/kafka:latest
     environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOST}:{$ZOOKEEPER_PORT}
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT}
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
     networks:
       static_network:
