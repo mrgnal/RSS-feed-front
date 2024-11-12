@@ -103,6 +103,7 @@ class RssChannelSourseAPIView(APIView):
 
         response_data = {
             'id': channel.id,
+            'url': channel.url,
             'tittle': channel.title,
             'subtitle': channel.subtitle,
             'image_url': channel.image_url,
