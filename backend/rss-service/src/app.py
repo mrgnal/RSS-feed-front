@@ -7,8 +7,12 @@ from saved_articles import *
 from db.database import get_db
 from sqlalchemy.orm import Session
 from db.rss_models import RSSFeed, Builder
+from xml.etree.ElementTree import Element, SubElement, tostring
+from fastapi.responses import StreamingResponse
 import parser
 import feed
+import csv
+import io
 
 app = FastAPI()
 
@@ -60,7 +64,7 @@ async def get_feed(channel_id: str, request:Request, db: Session = Depends(get_d
     if not feed:
         raise HTTPException(status_code=404, detail="Feed not found.")
 
-    return JSONResponse({'articles': feed.articles}, status_code=200)
+    return JSONResponse({'id': feed.uuid, 'articles': feed.articles}, status_code=200)
 @app.post('/api/feed/')
 async def create_feed(request : Request, db : Session = Depends(get_db)):
     data = await request.json()
@@ -100,9 +104,53 @@ async def create_builder(request : Request, db : Session = Depends(get_db)):
     db.commit()
     db.refresh(builder)
     return JSONResponse({'builder_id': builder.uuid, 'feed_id': builder.feed_id}, status_code=200)
-@app.get("/feeds/{feed_id}.xml")
-async def get_xml_feed(feed_id: str):
-    pass
-@app.get("/feeds/{feed_id}.json")
+@app.get("/api/feeds/{feed_id}.xml")
+async def get_xml_feed(feed_id: str, db : Session = Depends(get_db)):
+    feed = db.query(RSSFeed).filter(RSSFeed.uuid == feed_id).first()
+    if feed is None:
+        raise HTTPException(status_code=404, detail="Feed not found")
+    json_data = feed.articles
+
+    root = Element("feeds")
+
+    for item in json_data:
+        feed = SubElement(root, "feed")
+        for key, value in item.items():
+            elem = SubElement(feed, key)
+            elem.text = str(value)
+
+    xml_data = tostring(root, encoding='utf-8', method='xml')
+
+    return Response(content=xml_data, media_type="application/xml")
+
+@app.get("/api/feeds/{feed_id}.json")
 async def get_json_feed(feed_id: str,  db : Session = Depends(get_db)):
-    pass
+    feed = db.query(RSSFeed).filter(RSSFeed.uuid == feed_id).first()
+    if feed is None:
+        raise HTTPException(status_code=404, detail="Feed not found")
+    json_data = feed.articles
+
+    return JSONResponse(content=json_data)
+
+@app.get("/api/feeds/{feed_id}.csv")
+async def get_json_feed(feed_id: str,  db : Session = Depends(get_db)):
+    feed = db.query(RSSFeed).filter(RSSFeed.uuid == feed_id).first()
+    if feed is None:
+        raise HTTPException(status_code=404, detail="Feed not found")
+    json_data = feed.articles
+
+    csv_file = io.StringIO()
+    csv_writer = csv.writer(csv_file)
+
+    headers = json_data[0].keys()
+    csv_writer.writerow(headers)
+
+    for entry in json_data:
+        csv_writer.writerow(entry.values())
+
+    csv_file.seek(0)
+    response = StreamingResponse(csv_file, media_type="text/csv")
+    response.headers["Content-Disposition"] = f"attachment; filename=feed_{feed_id}.csv"
+
+    return response
+

@@ -112,4 +112,3 @@ class RssChannelSourseAPIView(APIView):
         }
 
         return Response(response_data)
-
