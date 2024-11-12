@@ -122,7 +122,6 @@ async def get_xml_feed(feed_id: str, db : Session = Depends(get_db)):
     xml_data = tostring(root, encoding='utf-8', method='xml')
 
     return Response(content=xml_data, media_type="application/xml")
-
 @app.get("/api/feeds/{feed_id}.json")
 async def get_json_feed(feed_id: str,  db : Session = Depends(get_db)):
     feed = db.query(RSSFeed).filter(RSSFeed.uuid == feed_id).first()
@@ -131,9 +130,8 @@ async def get_json_feed(feed_id: str,  db : Session = Depends(get_db)):
     json_data = feed.articles
 
     return JSONResponse(content=json_data)
-
 @app.get("/api/feeds/{feed_id}.csv")
-async def get_json_feed(feed_id: str,  db : Session = Depends(get_db)):
+async def get_csv_feed(feed_id: str,  db : Session = Depends(get_db)):
     feed = db.query(RSSFeed).filter(RSSFeed.uuid == feed_id).first()
     if feed is None:
         raise HTTPException(status_code=404, detail="Feed not found")
