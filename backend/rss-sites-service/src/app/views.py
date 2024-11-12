@@ -76,7 +76,9 @@ class RssChannelAPIView(APIView):
         channel_id = kwargs.get('pk')
         channel = self.get_object(channel_id)
 
-        data = request.data.copy()
+        allowed_fields = {'title', 'subtitle', 'image_url', 'status', 'is_new'}
+        data = {key: value for key, value in request.data.items() if key in allowed_fields}
+
         serializer = RssChannelSerializer(channel, data=data, partial=True)
 
         if serializer.is_valid():
