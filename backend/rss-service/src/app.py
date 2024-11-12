@@ -13,6 +13,7 @@ import parser
 import feed
 import csv
 import io
+from consumer import consume_rss_channels
 
 app = FastAPI()
 
@@ -23,6 +24,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# @app.on_event("startup")
+# async def startup_event():
+#     consume_rss_channels()
 
 @app.get('/api/check_channel/')
 async def get_from_rss(url: str, request: Request):
