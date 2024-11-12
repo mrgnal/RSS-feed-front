@@ -18,6 +18,7 @@ class RssChannelAPIView(APIView):
         for channel in channels:
             response_item ={
                 'id': channel.id,
+                'url': channel.url,
                 'tittle': channel.title,
                 'subtitle': channel.subtitle,
                 'image_url': channel.image_url,
