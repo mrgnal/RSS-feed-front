@@ -18,6 +18,7 @@ class RssChannelAPIView(APIView):
         for channel in channels:
             response_item ={
                 'id': channel.id,
+                'url': channel.url,
                 'tittle': channel.title,
                 'subtitle': channel.subtitle,
                 'image_url': channel.image_url,
@@ -80,7 +81,7 @@ class RssChannelAPIView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response({'data':data}, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
