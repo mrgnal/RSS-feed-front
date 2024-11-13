@@ -15,6 +15,18 @@ function getWindowSize() {
   return {innerWidth, innerHeight};
 }
 
+const getFeeds = async (rssSitesUrl: string, accessToken:string) => {
+  const res = await fetch(rssSitesUrl + "/api/channel/", {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
+    }
+  });
+  const data = await res.json();
+  return data.channels as Feed[];
+}
+
 interface Feed {
   id: string,
   tittle: string,
@@ -27,10 +39,9 @@ interface Feed {
 }
 
 const MyFeeds = () => {
-  const rssUrl = process.env.NEXT_PUBLIC_RSS;
-  const rssSitesUrl = process.env.NEXT_PUBLIC_RSS_SITES_URL;
-  const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMxMzkxNDUyLCJpYXQiOjE3MzEzNzM0NTIsImp0aSI6IjYyNjRmNWJkNWVlOTQ0YmZhNzI0MzI3ZmRhMzliMzJkIiwidXNlcl9pZCI6IjI3ZjhjMjc2LWRiYTYtNDFjMi1iNDEyLWNlNmNhMTc1NjIwZCJ9.xuBP-qWtkcZWXqDFktQBvklw2GWYNKuNBWTW3R_f9IU";
   const router = useRouter();
+  const rssSitesUrl = process.env.NEXT_PUBLIC_RSS_SITES_URL;
+  const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
 
   const [feeds, setFeeds] = useState<Feed[]>([]);
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
@@ -41,23 +52,16 @@ const MyFeeds = () => {
   const [filteredFeeds, setFilteredFeeds] = useState<Feed[]>([]);
   const [sortedFeeds, setSortedFeeds] = useState<Feed[]>([]);
 
-  // Fetch feeds data on component mount
   useEffect(() => {
-    fetch(rssSitesUrl + "/api/channel/", {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
+    async function fetchFeeds(){
+      if (rssSitesUrl && accessToken) {
+        const feeds = await getFeeds(rssSitesUrl, accessToken);
+        setFeeds(feeds);
       }
-    }).then(response => {
-      response.json().then(data => {
-        setFeeds(data.channels || []);
-        console.log("data: "+data);
-      });
-    }).catch(error => console.error("Error fetching feeds:", error));
-  }, [rssSitesUrl, accessToken]);
-
-  // Update window size on resize
+    }
+    fetchFeeds();
+  }, []);
+  
   useEffect(() => {
     function handleWindowResize() {
       setWindowSize(getWindowSize());
@@ -68,7 +72,6 @@ const MyFeeds = () => {
     };
   }, []);
 
-  // Filter feeds based on search term and isChecked status
   useEffect(() => {
     setFilteredFeeds(
       feeds.filter(feed =>
@@ -79,7 +82,6 @@ const MyFeeds = () => {
     );
   }, [feeds, searchTerm, isChecked]);
 
-  // Sort feeds based on selected sort option
   useEffect(() => {
     setSortedFeeds([...filteredFeeds].sort((a, b) => {
       const dateA = new Date(a.created_at).getTime();
@@ -102,7 +104,7 @@ const MyFeeds = () => {
       <RssFeedsMenu isMenuVisible={isMenuVisible} menuVisibleToggle={() => setIsMenuVisible(!isMenuVisible)} />
       <div className={style.content}>
         <RssFeedsHeader>
-          <h2 className={style.title}>My Feeds ({feeds.filter(feed => feed.status).length})</h2>
+          <h2 className={style.title}>My Feeds {feeds.filter(feed => feed.is_new).length > 0?`(${feeds.filter(feed => feed.is_new).length})`:""}</h2>
         </RssFeedsHeader>
         {feeds.length !== 0 && (
           <div className={style.filterContainer}>
@@ -147,7 +149,7 @@ const MyFeeds = () => {
           {feeds.length !== 0 && (
             <>
               {sortedFeeds.map((v, i) => (
-                <RssFeed key={v.id} title={v.tittle} url={v.url} image={v.image_url} checked={v.is_new} />
+                <RssFeed key={i} id={v.id} title={v.tittle} url={v.url} image={v.image_url} checked={v.is_new} desc={v.subtitle} />
               ))}
               <button
                 className={style.createFeed}

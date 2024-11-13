@@ -22,6 +22,10 @@
     color: rgb(153, 153, 153);
 }
 
+.actions{
+    position: relative;
+}
+
 .saveButton{
     display: inline-flex;
     gap: 8px;
@@ -39,3 +43,36 @@
     width: 100%;
     margin-top: 10px;
 }
+
+.dropdown {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    margin-top: 5px;
+    width: fit-content;
+}
+  
+.dropdownItem {
+    padding: 8px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+}
+  
+.dropdownItem:hover {
+    background-color: #f0f0f0;
+}
+
+.collectionInput {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+  

@@ -18,9 +18,31 @@ const RssFeed = () => {
   const [isGeneratorOrBuilder, setIsGeneratorOrBuider] = useState<boolean>(true); // true - generator; false - builder;
   const [isBuilderOpen, setIsBuilderOpen] = useState<boolean>(false);
   const [url, setUrl] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
   const errorRef = useRef<HTMLIFrameElement | null>(null);
   const [windowSize, setWindowSize] = useState(getWindowSize());
+
+  const generateFeed = async (rssUrl: string, url: string, router: any) => {
+    setErrorMessage(null); // очищаємо попередні помилки перед новим запитом
+  try {
+    const res = await fetch(`${rssUrl}/api/check_channel/?url=${url}`);
+
+    if (res.status === 200) {
+      // Якщо статус 200, редирект на нову сторінку
+      router.push(`/my-feeds/feed?forSave=true&url=${url}`);
+    } else if (res.status === 500) {
+      // Якщо статус 500 - проблема на сервері
+      setErrorMessage("Проблеми зі з'єднанням, перевірте його ще раз");
+    } else {
+      // Якщо інший статус, виводимо загальний текст помилки
+      setErrorMessage("Невідома помилка: " + res.statusText);
+    }
+  } catch (e) {
+    // Якщо сталася помилка з мережею або інша непередбачена помилка
+    setErrorMessage("Проблеми зі з'єднанням, перевірте його ще раз");
+  }
+  }
 
   useEffect(() => {
     function handleWindowResize() {
@@ -61,20 +83,18 @@ const RssFeed = () => {
               setIsBuilderOpen(true);
             }
             else{
-              const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMxMzc3ODQxLCJpYXQiOjE3MzEzNTk4NDEsImp0aSI6ImM4NmUzOWQ4YWZmYzQyNGJiNjBmYThiOGEyNzZlNTllIiwidXNlcl9pZCI6IjI3ZjhjMjc2LWRiYTYtNDFjMi1iNDEyLWNlNmNhMTc1NjIwZCJ9.maBlYyLdQ8g6EG4vxDFzwEKsc1mMcbRH8s1fIDzCNmc"//localStorage.getItem('accessToken');
-              fetch(rssUrl+"/api/check_channel/?url="+url).then(
-                response => {
-                  console.log(response);
-                }
-              ).then(()=>{
-                router.push('/my-feeds/feed?forSave=true&url='+url);
-              })
+              generateFeed(rssUrl!, url, router);
             }
           }}>{isGeneratorOrBuilder?'Generate':'Load Website'}</button>
         </div>
-        <div ref={errorRef} className={`${style.error}`}>
-          <p>123</p>
-        </div>
+        {
+          errorMessage != null && 
+          (
+            <div ref={errorRef} className={`${style.error}`}>
+              <p>{errorMessage}</p>
+            </div>
+          )
+        }
       </div>
       {
         isGeneratorOrBuilder &&

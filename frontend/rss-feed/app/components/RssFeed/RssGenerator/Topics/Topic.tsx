@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { MouseEventHandler } from 'react'
 import style from './Topic.module.css'
 
 const Topic = ({title, topic} : {title: string, topic : {title: string, url: string}[]}) => {

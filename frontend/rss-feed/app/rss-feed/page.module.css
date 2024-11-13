@@ -196,7 +196,7 @@
     border: 1px solid red;
     background-color: lightcoral;
     color: white;
-    visibility: collapse;
+    visibility: visible;
     max-width: 680px;
     border-radius: 5px;
     padding: 5px;

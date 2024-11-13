@@ -21,6 +21,18 @@ function getColumnsCount(width: number){
   else return 1;
 }
 
+interface feed{
+  id: string,
+  url: string,
+  tittle: string,
+  subtitle: string,
+  image_url: string,
+  update: string,
+  is_new: boolean,
+  status: boolean,
+  created_at: string
+}
+
 interface news{
   author: string
   collection_id: number
@@ -32,30 +44,147 @@ interface news{
   title: string
 }
 
+interface exportTypes{
+  xml: string,
+  json: string,
+  csv: string
+}
+
+const getFeeds = async () => {
+
+}
+
+interface Collection {
+  id: string,
+  user_id: string,
+  title: string
+}
+
+const getCollections = async () => {
+  const articalSavesUrl = process.env.NEXT_PUBLIC_ARTICAL_SAVES;
+  const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  const res = await fetch(articalSavesUrl + '/api/article_collections/',{
+    method: 'GET',
+    headers:{
+      'Authorization': 'Bearer '+accessToken
+    }
+  });
+  return await res.json() as Collection[];
+}
+
+const createCollection = async (title: string) => {
+  const articalSavesUrl = process.env.NEXT_PUBLIC_ARTICAL_SAVES;
+  const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  const res = await fetch(articalSavesUrl+'/api/article_collections/create/',{
+    method: 'POST',
+    headers:{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+accessToken
+    },
+    body: JSON.stringify({
+      title: title
+    })
+  })
+}
+
 const Feed = () => {
   const [isForSave, setIsForSave] = useState<boolean>(false);
+  const [collections, setCollections] = useState<Collection[]>([]);
   const [feedUrl, setFeedUrl] = useState<string | null>('');
-
+  const [feedId, setFeedId] = useState<string | null>('');
+  const [channel, setChannel] = useState<feed | null>();
+  const [status, setStatus] = useState<boolean>();
+  const [exportUrls, setExportUrls] = useState<exportTypes | null>();
+  const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;//localStorage.getItem('accessToken');
   const router = useRouter();
 
-  // Use useEffect to ensure it's only run on the client-side
-  const searchParams = useSearchParams();  // Hook from next/navigation
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const forSave = searchParams.get('forSave');
     const feed = searchParams.get('url');
+    const id = searchParams.get('id');
     setIsForSave(forSave === 'true');
     setFeedUrl(feed);
+    setFeedId(id);
     console.log(isForSave);
   }, [searchParams]); 
   
   const rssUrl = process.env.NEXT_PUBLIC_RSS;
   const rssSitesUrl = process.env.NEXT_PUBLIC_RSS_SITES_URL;
   const [news, setNews] = useState<news[]>([]);
-  fetch(rssUrl+"/api/check_channel/?url="+feedUrl).then(
-    response => {
-      response.json().then(data => {setNews(data.articles); console.log("AAAA " + data.articles)})
-  });
+  useEffect(() =>{
+    if(feedUrl){
+      fetch(rssUrl+"/api/check_channel/?url="+feedUrl).then(
+        response => {
+          response.json().then(data => {setNews(data.articles); setChannel({tittle: data.title, url: data.url, image_url: data.image_url} as feed); console.log("AAAA " + data.articles)})
+      });
+      fetch(rssSitesUrl+"/api/channel/"+feedId+"/source/", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+accessToken,
+        }
+      }).then(
+        response => {
+          response.json().then(data => {setChannel(data)})
+        }
+      ).catch((error)=>{
+        console.log("CCCC"+error);
+      });
+    }
+
+    if(feedId){
+      fetch(rssUrl+"/api/feed/?channel_id="+feedId).then(
+        response => {
+          response.json().then(data => {
+            setNews(data.articles); 
+            setExportUrls({
+              xml: rssUrl+"/api/feeds/"+data.id+".xml",
+              csv: rssUrl+"/api/feeds/"+data.id+".csv",
+              json: rssUrl+"/api/feeds/"+data.id+".json",
+            });
+            
+      });});
+      fetch(rssSitesUrl+"/api/channel/"+feedId+"/source/", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+accessToken,
+        }
+      }).then(
+        response => {
+          response.json().then(data => {
+            setChannel(data); 
+            console.log(data.status)
+            setStatus(data.status?true:false);
+          })
+        }
+      ).catch((error)=>{
+        console.log("CCCC"+error);
+      });
+      fetch(rssSitesUrl+"/api/channel/"+feedId+"/update/", {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+accessToken
+        },
+        body: JSON.stringify({
+          title: channel?.tittle,
+          subtitle: channel?.subtitle,
+          status: status,
+          is_new: false,
+        })
+      });
+    }
+  }, [feedId, feedUrl])
+  
+  useEffect(() => {
+    async function fetchCollections() {
+      setCollections(await getCollections());
+    }
+    fetchCollections();
+  }, []);
 
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
   const testFeeds = [
@@ -103,23 +232,7 @@ const Feed = () => {
     },
   ];
   
-  const formatDateDifference = (dateStr: string) => {
-    const date = new Date(dateStr).getTime(); // Перетворюємо рядок у об'єкт Date
-    const now = new Date().getTime();
-    const diffInSeconds = Math.floor((now - date) / 1000); // Різниця в секундах
-  
-    const minutes = Math.floor(diffInSeconds / 60);
-    const hours = Math.floor(diffInSeconds / 3600);
-    const days = Math.floor(diffInSeconds / (3600 * 24));
-  
-    if (minutes < 60) {
-      return `${minutes} m`;
-    } else if (hours < 24) {
-      return `${hours} h`;
-    } else {
-      return `${days} d`;
-    }
-  };
+
   const [sortOption, setSortOption] = useState("auto");
   const [typeOption, setTypeOption] = useState("xml");
   
@@ -158,13 +271,14 @@ const Feed = () => {
 
   const columnFeeds = Array.from({ length: columns }, (_, i) =>
     sortedFeeds.filter((_, index) => index % columns === i)
-  );
+  ); 
 
-  const url = {
-    xml:"https://test.com/feeds/asdasdqw.xml",
-    csv:"https://test.csv/asdqqqww.csv",
-    json:"https://qqq.com/feeds/asdasdqw.json" 
-  }  
+  const handleCreateCollection = async (newCollectionTitle: string) => {
+    if (newCollectionTitle.trim()) {
+      await createCollection(newCollectionTitle);
+      setCollections(await getCollections());
+    }
+  };
 
   return (
     <>
@@ -181,11 +295,11 @@ const Feed = () => {
                 <Image src="/back.svg" alt='back' width={20} height={20}/>
                 </button>
               <div className={style.feedImage}>
-                <Image src="/globe.svg" alt="img" width={20} height={20}/>
+                <Image src={channel?channel.image_url:""} unoptimized alt="img" width={20} height={20}/>
               </div>
               <div className={style.feedHeaderInfo}>
-                <h3>Title</h3>
-                <h5>https://urltofeed.com/this/is/url</h5>
+                <h3>{channel?.tittle}</h3>
+                <h5>{channel?.url}</h5>
               </div>
             </div>
           </RssFeedsHeader>
@@ -193,29 +307,32 @@ const Feed = () => {
             <div className={selectedView=="list"?style.feed:style.feedGrid}>
               <div className={selectedView=="list"?style.feedInfo:style.feedInfoGrid}>
                 <div className={style.feedExportAndSettings}>
+                {
+                  !isForSave &&
                   <div className={style.feedExport}>
                     <div className={style.export}>
-                      <input readOnly={true} className={style.exportURL} value={typeOption == "xml" ? url.xml : typeOption == "csv" ? url.csv : url.json}/>
-                      <select className={style.exportType} defaultValue="xml" onChange={(e) =>{
-                        setTypeOption(e.target.value);
-                      }}>
-                        <option value="xml">XML</option>
-                        <option value="csv">CSV</option>
-                        <option value="json">JSON</option>
-                      </select>
+                      <input readOnly={true} className={style.exportURL} value={typeOption == "xml" ? exportUrls?.xml : typeOption == "csv" ? exportUrls?.csv : exportUrls?.json}/>
+                        <select className={style.exportType} defaultValue="xml" onChange={(e) =>{
+                          setTypeOption(e.target.value);
+                        }}>
+                          <option value="xml">XML</option>
+                          <option value="csv">CSV</option>
+                          <option value="json">JSON</option>
+                        </select>
                     </div>
-                    <TypeButton image="/Copy-1.svg" text={buttonCopyText} onClick={() => {
-                      const exportURL = typeOption === "xml" ? url.xml : typeOption === "csv" ? url.csv : url.json;
-                      navigator.clipboard.writeText(exportURL)
-                        .then(() => {
-                          setButtonCopyText("Copied");
-                          setTimeout(() => setButtonCopyText("Copy"), 2000);
-                        })
-                        .catch((err) => {
-                          console.error("Помилка копіювання: ", err);
-                        });
-                    }} style={style.button} />
-                  </div>
+                      <TypeButton image="/Copy-1.svg" text={buttonCopyText} onClick={() => {
+                        const exportURL = typeOption === "xml" ? exportUrls?.xml : typeOption === "csv" ? exportUrls?.csv : exportUrls?.json;
+                        navigator.clipboard.writeText(exportURL!)
+                          .then(() => {
+                            setButtonCopyText("Copied");
+                            setTimeout(() => setButtonCopyText("Copy"), 2000);
+                          })
+                          .catch((err) => {
+                            console.error("Помилка копіювання: ", err);
+                          });
+                      }} style={style.button} />
+                    </div>
+                  }
                   {
                     selectedView == "list" && windowSize.innerWidth < 1000 &&
                     <TypeButton text="" image='/Settings.svg' onClick={() => {
@@ -257,7 +374,11 @@ const Feed = () => {
                       image={v.image}
                       text={v.summary}
                       source={v.author}
-                      date={formatDateDifference(v.published)}/>
+                      url={v.link}
+                      id={v.site_id}
+                      collections={collections}
+                      createCollection={handleCreateCollection}
+                      date={v.published}/>
                     })
                   }
                 </>
@@ -274,7 +395,11 @@ const Feed = () => {
                             image={v.image}
                             text={v.summary}
                             source={v.author}
-                            date={formatDateDifference(v.published)}
+                            url ={v.link}
+                            id={v.site_id}
+                            collections={collections}
+                            date={v.published}
+                            createCollection={handleCreateCollection}
                             feedStyle={style.gridFeed}/>
                         })}
                       </div>
@@ -292,18 +417,30 @@ const Feed = () => {
                   <Image src="/back.svg" alt='back' width={20} height={20}/>
                   </button>
               }
-              <TypeButton image="/Power.svg" text="Off" onClick={() => {
-                fetch(rssSitesUrl+"/api/channel/"); //dorobiti
-              }} style={style.button} width={16} height={16}/>
+              {
+                !isForSave &&
+                <TypeButton image="/Power.svg" text={status?"Off":"On"} onClick={() => {
+                  setStatus(!status);
+                  fetch(rssSitesUrl+"/api/channel/"+feedId+"/update/", {
+                    method: 'PATCH',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer '+accessToken
+                    },
+                    body: JSON.stringify({
+                      status: !status,
+                    })
+                  });
+                }} style={style.button} width={16} height={16}/>
+              }
               {
                 isForSave && 
                 <TypeButton image="/Save.svg" text="Save chanel" onClick={() => {
-                  const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMxMzkxNDUyLCJpYXQiOjE3MzEzNzM0NTIsImp0aSI6IjYyNjRmNWJkNWVlOTQ0YmZhNzI0MzI3ZmRhMzliMzJkIiwidXNlcl9pZCI6IjI3ZjhjMjc2LWRiYTYtNDFjMi1iNDEyLWNlNmNhMTc1NjIwZCJ9.xuBP-qWtkcZWXqDFktQBvklw2GWYNKuNBWTW3R_f9IU"//localStorage.getItem('accessToken');
                   fetch(rssUrl+"/api/check_channel/?url="+feedUrl).then(
                     response => {
                       response.json().then(data => {
                         console.log(data);
-                        fetch(rssSitesUrl + "/api/channel/create", {
+                        fetch(rssSitesUrl + "/api/channel/create/", {
                           method: 'POST',
                           headers: {
                             'Content-Type': 'application/json',

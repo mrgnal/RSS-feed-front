@@ -3,8 +3,10 @@ import React from 'react'
 import Image from 'next/image'
 import TypeButton from '../../TypeButton'
 import style from './Notfound.module.css'
+import { useRouter } from 'next/navigation'
 
 const NotFound = () => {
+  const router = useRouter();
   return (
     <div className={style.nothing}>
       <div className={style.circle}>
@@ -15,7 +17,9 @@ const NotFound = () => {
         <p className={style.nothingText}>You can add your first feed right now.</p>
         <p className={style.nothingText}>Try it out!</p>
       </div>
-      <TypeButton image="/Plus_square.svg" text="Create New Feed" onClick={() => {}} style="activeButton"/>
+      <TypeButton image="/Plus_square.svg" text="Create New Feed" onClick={() => {
+        router.push('rss-feed');
+      }} style="activeButton"/>
     </div>
   )
 }

@@ -8,6 +8,12 @@ import Topic from './RssFeed/RssGenerator/Topics/Topic';
 import Newsletter from './RssFeed/RssGenerator/Newsletters/Newsletter';
 import { useRouter } from 'next/navigation';
 
+const generateFeed = async (url: string, router: any) => {
+  const rssUrl = process.env.NEXT_PUBLIC_RSS;
+  const res = await fetch(rssUrl+"/api/check_channel/?url="+url);
+  if (res.status == 200) router.push('/my-feeds/feed?forSave=true&url='+url);
+}
+
 function getWindowSize() {
   const {innerWidth, innerHeight} = window;
   return {innerWidth, innerHeight};
@@ -25,102 +31,75 @@ const ReadyOptions = () => {
 
   const websites = [
     { title: "New York Times", image: "/nyt.svg", url: "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" },
-    { title: "BBC News", image: "/bbc.svg", url: "http://feeds.bbci.co.uk/news/rss.xml" },
-    { title: "CNN", image: "/cnn.svg", url: "http://rss.cnn.com/rss/cnn_topstories.rss" },
-    { title: "Reuters", image: "/reuters.svg", url: "http://feeds.reuters.com/reuters/topNews" },
+    { title: "BBC News", image: "/bbc.svg", url: "https://feeds.bbci.co.uk/news/rss.xml" },
+    { title: "CNN", image: "/cnn.svg", url: "https://rss.cnn.com/rss/edition.rss" },
+    { title: "Reuters", image: "/reuters.svg", url: "https://www.reutersagency.com/feed/?best-topics=general-news" },
     { title: "The Guardian", image: "/guardian.svg", url: "https://www.theguardian.com/world/rss" },
-    { title: "Forbes", image: "/forbes.svg", url: "https://www.forbes.com/investing/feed2/" },
-  ];
+    { title: "Forbes", image: "/forbes.svg", url: "https://www.forbes.com/most-popular/feed/" },
+];
 
   const topics = [
     { 
-      title: 'Buisnes', 
+      title: 'Business', 
       topic: [
-        { title: 'Bitcoin', url: 'https://google.com' },
-        { title: 'Ethereum', url: 'https://google.com' },
-        { title: 'Blockchain Technology', url: 'https://google.com' },
-        { title: 'NFTs and Digital Assets', url: 'https://google.com' }
+        { title: 'Bitcoin', url: 'https://www.bbc.com/news/topics/c8mz8r9v4d2t/bitcoin' },
+        { title: 'Ethereum', url: 'https://www.cnbc.com/ethereum/' },
+        { title: 'Blockchain Technology', url: 'https://www.forbes.com/blockchain/' },
+        { title: 'NFTs and Digital Assets', url: 'https://www.theverge.com/nft' }
       ]
     },
     { 
-      title: 'Crypto', 
+      title: 'Sports', 
       topic: [
-        { title: 'Football News', url: 'https://google.com' },
-        { title: 'Basketball Highlights', url: 'https://google.com' },
-        { title: 'Tennis Updates', url: 'https://google.com' }
+        { title: 'Football News', url: 'https://www.espn.com/soccer/' },
+        { title: 'Basketball Highlights', url: 'https://www.nba.com/news' },
+        { title: 'Tennis Updates', url: 'https://www.atptour.com/en/news' }
       ]
     },
     { 
-      title: 'Crypto', 
+      title: 'Technology', 
       topic: [
-        { title: 'AI Innovations', url: 'https://google.com' },
-        { title: 'Latest Gadgets', url: 'https://google.com' }
+        { title: 'AI Innovations', url: 'https://www.wired.com/tag/artificial-intelligence/' },
+        { title: 'Latest Gadgets', url: 'https://www.theverge.com/tech' }
       ]
     },
     { 
-      title: 'Crypto', 
+      title: 'Health', 
       topic: [
-        { title: 'Healthy Lifestyle Tips', url: 'https://google.com' },
-        { title: 'Nutrition Advice', url: 'https://google.com' },
-        { title: 'Mental Health Awareness', url: 'https://google.com' },
-        { title: 'Exercise Routines', url: 'https://google.com' },
-        { title: 'Sleep and Recovery', url: 'https://google.com' }
+        { title: 'Healthy Lifestyle Tips', url: 'https://www.webmd.com/healthy-living' },
+        { title: 'Nutrition Advice', url: 'https://www.healthline.com/nutrition' },
+        { title: 'Mental Health Awareness', url: 'https://www.psychologytoday.com/us/basics/mental-health' },
+        { title: 'Exercise Routines', url: 'https://www.menshealth.com/fitness/' },
+        { title: 'Sleep and Recovery', url: 'https://www.sleepfoundation.org/' }
       ]
     },
     { 
-      title: 'Crypto', 
+      title: 'Travel', 
       topic: [
-        { title: 'Top Travel Destinations', url: 'https://google.com' },
-        { title: 'Travel Tips & Tricks', url: 'https://google.com' },
-        { title: 'Adventure Tourism', url: 'https://google.com' },
-        { title: 'Backpacking Guides', url: 'https://google.com' },
-        { title: 'Luxury Resorts', url: 'https://google.com' }
+        { title: 'Top Travel Destinations', url: 'https://www.lonelyplanet.com/best-in-travel' },
+        { title: 'Travel Tips & Tricks', url: 'https://www.travelandleisure.com/travel-tips' },
+        { title: 'Adventure Tourism', url: 'https://www.nationalgeographic.com/adventure/' },
+        { title: 'Backpacking Guides', url: 'https://www.backpacker.com/' },
+        { title: 'Luxury Resorts', url: 'https://www.cntraveler.com/the-best-resorts-in-the-world' }
       ]
     },
     { 
-      title: 'Buisnes', 
+      title: 'Business', 
       topic: [
-        { title: 'Stock Market Insights', url: 'https://google.com' },
-        { title: 'Investment Strategies', url: 'https://google.com' },
-        { title: 'Entrepreneurship Tips', url: 'https://google.com' },
-        { title: 'Real Estate Market', url: 'https://google.com' }
+        { title: 'Stock Market Insights', url: 'https://www.reuters.com/markets/' },
+        { title: 'Investment Strategies', url: 'https://www.forbes.com/investing/' },
+        { title: 'Entrepreneurship Tips', url: 'https://www.entrepreneur.com/' },
+        { title: 'Real Estate Market', url: 'https://www.realtor.com/news/real-estate-news/' }
       ]
     },
     { 
-      title: 'Crypto', 
+      title: 'Art', 
       topic: [
-        { title: 'Modern Art Trends', url: 'https://google.com' },
-        { title: 'Famous Paintings', url: 'https://google.com' }
-      ]
-    },
-    { 
-      title: 'Buisnes', 
-      topic: [
-        { title: 'Bitcoin', url: 'https://google.com' },
-        { title: 'Ethereum', url: 'https://google.com' },
-        { title: 'Blockchain Technology', url: 'https://google.com' },
-        { title: 'NFTs and Digital Assets', url: 'https://google.com' }
-      ]
-    },
-    { 
-      title: 'Crypto', 
-      topic: [
-        { title: 'Football News', url: 'https://google.com' },
-        { title: 'Basketball Highlights', url: 'https://google.com' },
-        { title: 'Tennis Updates', url: 'https://google.com' }
-      ]
-    },
-    { 
-      title: 'Crypto', 
-      topic: [
-        { title: 'Healthy Lifestyle Tips', url: 'https://google.com' },
-        { title: 'Nutrition Advice', url: 'https://google.com' },
-        { title: 'Mental Health Awareness', url: 'https://google.com' },
-        { title: 'Exercise Routines', url: 'https://google.com' },
-        { title: 'Sleep and Recovery', url: 'https://google.com' }
+        { title: 'Modern Art Trends', url: 'https://www.artnews.com/c/art-news/news/' },
+        { title: 'Famous Paintings', url: 'https://www.artsy.net/articles' }
       ]
     }
-  ];  
+  ];
 
   const newsletters = [
     {
@@ -242,7 +221,7 @@ const ReadyOptions = () => {
               key={index}
               text={website.title}
               image={website.image}
-              onClick={() => window.location.href = website.url}
+              onClick={() => generateFeed(website.url, router)}
             />
           ))}
           </div>

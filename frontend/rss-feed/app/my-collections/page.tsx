@@ -7,55 +7,54 @@ import Image from 'next/image'
 import Collection from '../components/RssFeed/Collections/Collection'
 import RssFeedMenuMobile from '../components/RssFeed/RssFeeds/RssFeedMenuMobile'
 
+interface collection{
+  collection: collectionInfo,
+  articles: article[]
+}
+
+interface collectionInfo{
+  id: string;
+  user_id: string;
+  title: string;
+}
+
+interface article {
+  id: string;
+  site_id: string;
+  title: string;
+  link: string;
+  image: string;
+  summary: string;
+  author: string;
+  published: string;
+  collection_id: string;
+}
+
+const getCollections = async () => {
+  const articalSavesUrl = process.env.NEXT_PUBLIC_ARTICAL_SAVES;
+  const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  const res = await fetch(articalSavesUrl+'/api/article_collection/articles/',{
+    method: 'GET',
+    headers:{
+      'Authorization': 'Bearer '+accessToken
+    }
+  });
+  return res.json();
+}
+
 function getWindowSize() {
   const {innerWidth, innerHeight} = window;
   return {innerWidth, innerHeight};
 }
 
 const Collections = () => {
-  const collections = [
-    {
-      title: "Test collection"
-    },
-    {
-      title: "Test collection 2"
-    },
-    {
-      title: "Test collection 3"
-    },
-    {
-      title: "Test collection 4"
-    },
-    {
-      title: "Test collection 5"
-    },
-    {
-      title: "Test collection 6"
-    },
-    {
-      title: "Test collection 7"
-    },
-    {
-      title: "Test collection 8"
-    },
-    {
-      title: "Test collection 9"
-    },
-    {
-      title: "Test collection 10"
-    },
-    {
-      title: "Test collection 11"
-    },
-  ];
+
+  const [collections, setCollections] = useState<collection[]>([]);
+
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
 
   const [windowSize, setWindowSize] = useState(getWindowSize());
   const [searchTerm, setSearchTerm] = useState('');
-
-  const filteredCollections = collections.filter((collection) =>
-    collection.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   useEffect(() => {
     function handleWindowResize() {
@@ -68,6 +67,17 @@ const Collections = () => {
       window.removeEventListener('resize', handleWindowResize);
     };
   }, []);
+
+  useEffect(() => {
+    async function fetchCollection(){
+      setCollections(await getCollections());
+    }
+    fetchCollection();
+  }, []);
+
+  async function deleteHandler(){
+    setCollections(await getCollections());
+  }
 
   return (
     <>
@@ -91,8 +101,10 @@ const Collections = () => {
           </div>
           <div className={style.contentContainer}>
             {
-              filteredCollections.map((v ,i) =>{
-                return <Collection key={i} title={v.title}/>
+              collections.filter((collection) =>
+                collection.collection.title.toLowerCase().includes(searchTerm.toLowerCase())
+              ).map((v ,i) =>{
+                return <Collection id={v.collection.id} key={i} title={v.collection.title} articles={v.articles} deleteCollectionHandler={deleteHandler}/>
               })
             }
           </div>

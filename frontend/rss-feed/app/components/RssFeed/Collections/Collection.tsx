@@ -5,7 +5,31 @@ import CollectionEdit from './CollectionEdit'
 import ConfirmDelete from '../../ConfirmDelete'
 import Image from 'next/image'
 
-const Collection = ({title} : {title: string}) => {
+const deleteCollection = async (id: string) => {
+  const articalSavesUrl = process.env.NEXT_PUBLIC_ARTICAL_SAVES;
+  const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  const res = await fetch(articalSavesUrl+'/api/article_collections/'+id+'/delete/', {
+    method: 'DELETE',
+    headers:{
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer '+accessToken,
+    }
+  });
+}
+
+interface article {
+  id: string;
+  site_id: string;
+  title: string;
+  link: string;
+  image: string;
+  summary: string;
+  author: string;
+  published: string;
+  collection_id: string;
+}
+
+const Collection = ({title, articles, id, deleteCollectionHandler} : {id: string, title: string, articles: article[], deleteCollectionHandler: any}) => {
   const [isEditOpen, setEditOpen] = useState<boolean>(false);
   const [isDeleteOpen, setDeleteOpen] = useState<boolean>(false);
 
@@ -24,21 +48,31 @@ const Collection = ({title} : {title: string}) => {
               <button onClick={() => {
                 setDeleteOpen(true);
               }}>
-                <Image src="/trash.svg" alt="E" width={24} height={24}/>
+                <Image src="/trash.svg" alt="D" width={24} height={24}/>
               </button>
             </div>
         </div>
         <div className={style.collectionContent}>
-            <CollectionElement image="/second-step.webp" title='This is title' author='test.com'/>
-            <CollectionElement image="/second-step.webp" title='This is title' author='test.com'/>
-            <CollectionElement image="/second-step.webp" title='This is title' author='test.com'/>
+          {
+            articles.map((v,i) =>{
+              return <CollectionElement id={v.id} key={i} image={v.image} title={v.title} author={v.author} link={v.link} onDelete={async () => {
+                const indexToRemove = articles.findIndex(article => article.id === v.id);
+                if (indexToRemove !== -1) {
+                  articles.splice(indexToRemove, 1);
+                }
+                await deleteCollectionHandler();
+              }}/>
+            })
+          }
         </div>
-        <CollectionEdit isOpen={isEditOpen} close={()=>{
+        <CollectionEdit id={id} isOpen={isEditOpen} close={()=>{
           setEditOpen(false);
-        }}/>
+        }} _title={title}/>
         <ConfirmDelete title="collection" isOpen={isDeleteOpen} close={()=>{
           setDeleteOpen(false);
-        }} confirmAction={() => {
+        }} confirmAction={async () => {
+          await deleteCollection(id);
+          await deleteCollectionHandler();
           setDeleteOpen(false);
         }}/>
     </div>

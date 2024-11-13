@@ -6,15 +6,19 @@ import FeedEdit from './FeedEdit'
 import ConfirmDelete from '../../ConfirmDelete'
 import { useRouter } from 'next/navigation'
 
-const RssFeed = ({title, url, image, checked}: {title: string, url: string, image: string, checked: boolean}) => {
+const RssFeed = ({id, title, url, image, checked, desc}: {desc: string, id:string, title: string, url: string, image: string, checked: boolean}) => {
   const router = useRouter();
   const [isEditOpen, setEditOpen] = useState<boolean>(false);
   const [isDeleteOpen, setDeleteOpen] = useState<boolean>(false);
+	const rssUrl = process.env.NEXT_PUBLIC_RSS;
+  const rssSitesUrl = process.env.NEXT_PUBLIC_RSS_SITES_URL;
+  const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
 
   return (
-	<div className={style.feed} onClick={(e) => {
-		router.push('/my-feeds/feed?url='+url);
-	}}>
+		<>
+		<div className={style.feed} onClick={(e) => {
+			router.push('/my-feeds/feed?id='+id);
+		}}>
 		<div className={style.panel}>
 			<TypeButton image="/edit.svg" text="" onClick={(e)=>{     
         e.stopPropagation();   
@@ -39,9 +43,29 @@ const RssFeed = ({title, url, image, checked}: {title: string, url: string, imag
 			</div>
 		</div>
 		<div className={style.panel} style={{height: 20}}/>
-    <FeedEdit isOpen={isEditOpen} close={() => {setEditOpen(false)}}/>
-    <ConfirmDelete title='feed' isOpen={isDeleteOpen} close={()=>{setDeleteOpen(false)}} confirmAction={()=>{setDeleteOpen(false)}}/>
 	</div>
+	<FeedEdit isOpen={isEditOpen} close={(e) => {
+			e.stopPropagation();
+			setEditOpen(false)}}
+			_title={title}
+			_description={desc}
+			_iconUrl={image}
+			id={id}
+	/>
+	<ConfirmDelete title='feed' isOpen={isDeleteOpen} close={()=>{setDeleteOpen(false)}} confirmAction={(e)=>{
+		
+			fetch(rssSitesUrl+"/api/channel/"+id+"/delete/",{
+				method: 'DELETE',
+				headers:
+				{
+					'Authorization': 'Bearer '+accessToken 
+				}
+			}).then(
+				()=>{window.location.reload();}
+			);
+			setDeleteOpen(false)
+			}}/>
+	</>
   )
 }
 
