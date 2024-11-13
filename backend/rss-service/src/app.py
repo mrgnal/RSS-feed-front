@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi import Response
 from starlette.responses import HTMLResponse
@@ -13,7 +14,7 @@ import parser
 import feed as fd
 import csv
 import io
-from consumer import consume_rss_channels
+from consumer import consume_rss_channels, close_consumer
 
 app = FastAPI()
 
@@ -25,9 +26,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# @app.on_event("startup")
-# async def startup_event():
-#     consume_rss_channels()
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(consume_rss_channels())
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    close_consumer()
 
 @app.get('/api/check_channel/')
 async def get_from_rss(url: str, request: Request):

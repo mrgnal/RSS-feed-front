@@ -29,7 +29,7 @@ class ArticleCollectionCreateAPIView(APIView):
             return Response({'detail': 'User unauthorized.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         data = request.data.copy()
-        data['user_id'] = self.request.user.get('id')
+        data['user_id'] = request.user.get('id')
 
         serializer = ArticleCollectionSerializer(data=data)
 
@@ -82,8 +82,9 @@ class ArticleDeleteAPIView(APIView):
             obj = Article.objects.get(id=article_id)
         except Article.DoesNotExist:
             raise PermissionDenied("Collection not found.")
+        collection_id = obj.collection_id
 
-        if str(obj.user_id) != str(self.request.user.get('id')):
+        if str(ArticleCollection.objects.get(id=collection_id).user_id) != str(self.request.user.get('id')):
             raise PermissionDenied(f"You do not have permission to edit this collection.")
 
         return obj
@@ -97,7 +98,7 @@ class ArticleDeleteAPIView(APIView):
 
 class CollectionWithArticles(APIView):
     def get(self, request, *args, **kwargs):
-        if not self.request.user:
+        if not request.user:
             return Response({'detail': 'User unauthorized.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         collections = ArticleCollection.objects.filter(user_id=self.request.user.get('id'))

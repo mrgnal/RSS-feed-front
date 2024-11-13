@@ -1,11 +1,11 @@
 from confluent_kafka import Consumer, KafkaException, KafkaError
 import json
-import feed
+import copy
+import feed as fd
+import asyncio
 from producer import send_updates_to_kafka
-from fastapi import Depends
-from sqlalchemy.orm import Session
+from db.database import SessionLocal
 from db.rss_models import RSSFeed
-from db.database import get_db
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -22,13 +22,14 @@ consumer_config = {
 
 consumer = Consumer(consumer_config)
 
-def consume_rss_channels():
+async def consume_rss_channels():
     consumer.subscribe([f'{KAFKA_TOPIC}'])
 
     try:
         while True:
-            msg = consumer.poll(1.0)  # Чекаємо повідомлення
+            msg = consumer.poll(1.0)
             if msg is None:
+                await asyncio.sleep(0.1)
                 continue
             if msg.error():
                 if msg.error().code() == KafkaError._PARTITION_EOF:
@@ -37,28 +38,40 @@ def consume_rss_channels():
                     raise KafkaException(msg.error())
             else:
                 data = json.loads(msg.value().decode('utf-8'))
-                check_update(data)
+                await check_update(data)
 
-    except KeyboardInterrupt:
+    except asyncio.CancelledError:
         pass
     finally:
         consumer.close()
 
-def check_update(data):
+def close_consumer():
+    consumer.close()
+
+async def check_update(data):
     url = data['url']
-    parsed_data = feed.parse(url)
-    source = feed.get_source(parsed_data)
+    parsed_data = fd.parse(url)
+    source = fd.get_source(parsed_data)
     updated = source.get('updated')
     channel_id = data['id']
+    new_articles = fd.get_articles(parsed_data)
 
-    if updated != data['updated']:
-        articles = feed.get_articles(parsed_data)
-        update_feed(channel_id,articles)
-        send_updates_to_kafka(channel_id, updated)
+    db = SessionLocal()
+    try:
+        feed = db.query(RSSFeed).filter(RSSFeed.channel_id == channel_id).first()
+        if feed:
+            old_articles = feed.articles
 
-def update_feed(channel_id: str, articles,db : Session = Depends(get_db)):
-    feed = db.query(RSSFeed).filter(RSSFeed.channel_id == channel_id).first()
-    if feed:
-        feed.articles = articles
-        db.commit()
-        db.refresh(feed)
+            clear_new_articles = copy.deepcopy(new_articles)
+            fd.delete_field('collection_id', clear_new_articles)
+
+            clear_old_articles = copy.deepcopy(old_articles)
+            fd.delete_field('collection_id', clear_old_articles)
+
+            if  clear_new_articles != clear_old_articles:
+                feed.articles = new_articles
+                db.commit()
+                db.refresh(feed)
+                await send_updates_to_kafka(channel_id, updated)
+    finally:
+        db.close()
