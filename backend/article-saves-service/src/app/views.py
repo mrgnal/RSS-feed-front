@@ -82,8 +82,9 @@ class ArticleDeleteAPIView(APIView):
             obj = Article.objects.get(id=article_id)
         except Article.DoesNotExist:
             raise PermissionDenied("Collection not found.")
+        collection_id = obj.collection_id
 
-        if str(obj.user_id) != str(self.request.user.get('id')):
+        if str(ArticleCollection.objects.get(id=collection_id).user_id) != str(self.request.user.get('id')):
             raise PermissionDenied(f"You do not have permission to edit this collection.")
 
         return obj
