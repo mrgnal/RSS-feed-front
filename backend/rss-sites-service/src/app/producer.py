@@ -11,7 +11,7 @@ KAFKA_PORT = os.getenv('KAFKA_PORT')
 KAFKA_TOPIC = os.getenv('KAFKA_TOPIC_UPDATE_FEED')
 
 producer_config = {
-    'bootstrap.servers': f'{KAFKA_HOST}:]{KAFKA_PORT}',
+    'bootstrap.servers': f'{KAFKA_HOST}:{KAFKA_PORT}',
     'client.id': 'drf-service'
 }
 
@@ -23,7 +23,7 @@ def send_rss_channels_to_kafka():
         message = {
             'id': str(channel.id),
             'url': channel.url,
-            'updated': channel.updated,
+            'updated': channel.updated.isoformat(),
         }
         producer.produce(f'{KAFKA_TOPIC}', key=str(channel.id), value=json.dumps(message))
         producer.flush()

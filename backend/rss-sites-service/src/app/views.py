@@ -9,9 +9,10 @@ from .feed import *
 
 class RssChannelAPIView(APIView):
     def get(self, request, *args, **kwargs):
-        user_id = request.user.get('id')
-        if not user_id:
+        user = request.user
+        if not user:
             return Response({'detail': 'User unauthorized.'}, status=status.HTTP_401_UNAUTHORIZED)
+        user_id = user.get('id')
         channels = RssChannel.objects.filter(user_id=user_id)
         count = len(channels)
         response_data = []
@@ -24,6 +25,7 @@ class RssChannelAPIView(APIView):
                 'image_url': channel.image_url,
                 'is_new': channel.is_new,
                 'status': channel.status,
+                'updated': channel.updated,
                 'created_at': channel.created_at,
             }
             response_data.append(response_item)
@@ -32,11 +34,11 @@ class RssChannelAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data.copy()
-        user_id = request.user.get('id')
+        user = request.user
 
-        if not user_id:
+        if not user:
             return Response({'detail': 'User unauthorized.'}, status=status.HTTP_401_UNAUTHORIZED)
-
+        user_id = user.get('id')
         # max_feed_limit = max_feeds(request)
         # if not max_feed_limit:
         #     return Response({'detail': 'Unable to fetch max feeds.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -83,7 +85,7 @@ class RssChannelAPIView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({"detail": "Update successful"}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -100,6 +102,8 @@ class RssChannelAPIView(APIView):
 
 class RssChannelSourseAPIView(APIView):
     def get(self, request, *args, **kwargs):
+        if not self.request.user:
+            return Response({'detail': 'User unauthorized.'}, status=status.HTTP_401_UNAUTHORIZED)
         channel_id = kwargs.get('pk')
         channel = get_object_or_404(RssChannel, id=channel_id)
 
@@ -109,9 +113,9 @@ class RssChannelSourseAPIView(APIView):
             'tittle': channel.title,
             'subtitle': channel.subtitle,
             'image_url': channel.image_url,
-            'update': channel.updated,
             'is_new': channel.is_new,
             'status': channel.status,
+            'update': channel.updated,
             'created_at': channel.created_at,
         }
 

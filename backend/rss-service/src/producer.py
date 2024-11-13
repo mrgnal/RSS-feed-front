@@ -13,7 +13,7 @@ producer = Producer({
     'client.id': 'fastapi-service'
 })
 
-def send_updates_to_kafka(channel_id, updated):
+async def send_updates_to_kafka(channel_id, updated):
     message = {
         'channel_id': channel_id,
         'updated': updated,

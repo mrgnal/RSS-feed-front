@@ -44,7 +44,6 @@ services:
     depends_on:
       - zookeeper
 
-
   user_auth:
     build:
       context: ./backend/user-auth-service
@@ -146,21 +145,6 @@ services:
     depends_on:
       - db
       - kafka
-
-#  admin:
-#    build:
-#      context: ./backend/admin-service
-#    env_file:
-#      .env
-#    volumes:
-#      - ./backend/admin-service/src:/app
-#    ports:
-#      - '8007:80'
-#    networks:
-#      static_network:
-#        ipv4_address: 172.28.0.80
-#    depends_on:
-#      - db
 
 volumes:
   postgres_data:
