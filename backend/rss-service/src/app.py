@@ -36,15 +36,15 @@ async def shutdown_event():
 
 @app.get('/api/check_channel/')
 async def get_from_rss(url: str, request: Request):
-    url = fd.check_url(url)
-    if not url:
-        raise HTTPException(status_code=404, detail=f"RSS feed not found.")
     try:
+        url = fd.check_url(url)
         parsed_data = fd.parse(url)
         articles = fd.get_articles(parsed_data)
         source = fd.get_source(parsed_data)
     except HTTPException as http_exc:
         return JSONResponse({'detail': str(http_exc.detail)}, status_code=http_exc.status_code)
+    except Exception as exc:
+        raise HTTPException(status_code=404, detail=f"Page not found: {str(exc)}")
 
     source['url'] = url if str(source['url']) != str(url) else source['url']
     token = request.headers.get('Authorization')
@@ -67,8 +67,11 @@ def get_source_page(url: str):
     try:
         html_content = parser.fetch_full_page(url)
         return HTMLResponse(content=html_content, status_code=200)
+    except Exception as exc:
+        raise HTTPException(status_code=404, detail=f"Page not found: {str(exc)}")
     except HTTPException as http_exc:
         return JSONResponse({'detail': str(http_exc.detail)}, status_code=http_exc.status_code)
+
 @app.get('/api/feed/')
 async def get_feed(channel_id: str, request:Request, db: Session = Depends(get_db)):
     feed = db.query(RSSFeed).filter(RSSFeed.channel_id == channel_id).first()
