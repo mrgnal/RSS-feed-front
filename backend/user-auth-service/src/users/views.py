@@ -305,3 +305,177 @@ class CustomTokenVerifyView(TokenVerifyView):
                     response.data['user_info'] = None
 
         return response
+
+
+class LogoutView(APIView):
+    @swagger_auto_schema(
+        responses={
+            200: 'Successfully logged out',
+            401: 'Unauthorized'
+        }
+    )
+    def post(self, request):
+        # auth_service = self.get_auth_service()
+        # result = auth_service.logout(request)
+        return Response({'detail': 'Log out successful'}, status=status.HTTP_200_OK)
+
+
+class DeactivateAccountView(APIView):
+    @swagger_auto_schema(
+        responses={
+            200: 'Account deactivated successfully',
+            401: 'Unauthorized'
+        }
+    )
+    def post(self, request):
+        # service = UserProfileService(request.user)
+        # service.deactivate_account()
+        return Response({'detail': 'Account deactivated successfully'}, status=status.HTTP_200_OK)
+
+
+@permission_classes([permissions.IsAdminUser])
+class ListUsersView(generics.ListAPIView):
+    class UserSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+        email = serializers.EmailField()
+        username = serializers.CharField()
+        is_active = serializers.BooleanField()
+
+    @swagger_auto_schema(
+        responses={
+            200: openapi.Response(
+                description="List of users",
+                schema=UserSerializer(many=True)
+            )
+        }
+    )
+    def get(self, request):
+        users = User.objects.all().values('id', 'email', 'username', 'is_active')
+        return Response(users)
+
+
+class UserDetailsView(generics.RetrieveAPIView):
+    class UserDetailsSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+        email = serializers.EmailField()
+        username = serializers.CharField()
+        role = serializers.CharField()
+
+    @swagger_auto_schema(
+        responses={
+            200: openapi.Response(
+                description="User details",
+                schema=UserDetailsSerializer()
+            ),
+            404: 'User not found'
+        }
+    )
+    def get(self, request, user_id):
+        user = User.objects.filter(id=user_id).first()
+        if not user:
+            return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({
+            'id': user.id,
+            'email': user.email,
+            'username': user.username,
+            'role': user.role,
+        })
+
+class UserActivityLogsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(
+        responses={
+            200: openapi.Response(
+                description="List of user activity logs",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'timestamp': openapi.Schema(type=openapi.TYPE_STRING, format='date-time'),
+                            'action': openapi.Schema(type=openapi.TYPE_STRING, example='Login'),
+                            'ip_address': openapi.Schema(type=openapi.TYPE_STRING, example='192.168.1.1'),
+                        }
+                    )
+                )
+            )
+        }
+    )
+    def get(self, request):
+        # Фейковий приклад даних
+        logs = [
+            {'timestamp': '2024-11-11T12:34:56Z', 'action': 'Login', 'ip_address': '192.168.1.1'},
+            {'timestamp': '2024-11-10T15:22:45Z', 'action': 'Password Change', 'ip_address': '192.168.1.2'},
+        ]
+        return Response(logs, status=status.HTTP_200_OK)
+
+
+class UserStatisticsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(
+        responses={
+            200: openapi.Response(
+                description="User statistics",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'completed_sessions': openapi.Schema(type=openapi.TYPE_INTEGER, example=42),
+                        'total_time_spent': openapi.Schema(type=openapi.TYPE_STRING, example='15h 30m'),
+                    }
+                )
+            )
+        }
+    )
+    def get(self, request):
+        stats = {
+            'completed_sessions': 42,
+            'total_time_spent': '15h 30m',
+        }
+        return Response(stats, status=status.HTTP_200_OK)
+
+
+class UpdateNotificationPreferencesView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    class NotificationPreferencesSerializer(serializers.Serializer):
+        email_notifications = serializers.BooleanField(required=True)
+        sms_notifications = serializers.BooleanField(required=True)
+
+    @swagger_auto_schema(
+        request_body=NotificationPreferencesSerializer,
+        responses={
+            200: 'Notification preferences updated successfully',
+            400: 'Invalid input data'
+        }
+    )
+    def put(self, request):
+        serializer = self.NotificationPreferencesSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response({'detail': 'Notification preferences updated successfully'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes([permissions.IsAdminUser])
+class UpdateUserRoleView(APIView):
+    class UserRoleSerializer(serializers.Serializer):
+        user_id = serializers.IntegerField(required=True)
+        new_role = serializers.ChoiceField(choices=['user', 'manager', 'admin'], required=True)
+
+    @swagger_auto_schema(
+        request_body=UserRoleSerializer,
+        responses={
+            200: 'User role updated successfully',
+            404: 'User not found'
+        }
+    )
+    def patch(self, request):
+        serializer = self.UserRoleSerializer(data=request.data)
+        if serializer.is_valid():
+            user_id = serializer.validated_data['user_id']
+            new_role = serializer.validated_data['new_role']
+            return Response({'detail': f'Role updated to {new_role} for user {user_id}'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
